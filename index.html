@@ -262,11 +262,11 @@
 </nav>
       <div class="body-wrap">
   
-    <article id="post-爬虫4" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-python1" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2017/05/22/爬虫4/" class="article-date">
-      <time datetime="2017-05-22T15:21:16.000Z" itemprop="datePublished">2017-05-22</time>
+      <a href="/2017/05/23/python1/" class="article-date">
+      <time datetime="2017-05-23T05:04:42.000Z" itemprop="datePublished">2017-05-23</time>
 </a>
 
 
@@ -281,7 +281,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2017/05/22/爬虫4/">Python爬虫日记4：Charles抓包获取黑大帐号密码验证码并登录</a>
+      <a class="article-title" href="/2017/05/23/python1/">Python实现斐波那契数列方法及其优化总结</a>
     </h1>
   
 
@@ -291,10 +291,10 @@
     <div class="article-entry" itemprop="articleBody">
       
           
-              <h1 id="一：前言"><a href="#一：前言" class="headerlink" title="一：前言"></a>一：前言</h1><p>今天看了一篇安利Charles这个软件的文章，就拿来试试，我们大学的登录页面用开发者模式进去chrome有屏蔽相关模块，用火狐可以正常不过还是抓不到验证码这个js动态数据而且帐号密码的请求后Cookies并找不到。那么这个时候使用抓包软件就是一个好的方法之一了，之前也用过其他抓包软件，比如Fidder，今天用过Charles后才发现还有比Fidder好用的抓包软件，这个比较简洁，数据查找也很直观。</p>
-<blockquote>
-<p><strong>目标：</strong>使用抓包软件Charles对页面数据分析找到帐号密码以及验证码的接口，然后用Python实现模拟登录，并提取登录后的页面。</p>
+              <blockquote>
+<p>斐波那契数列的相关题目是面试常见的，所以我看了些资料总结记录一下这些小的知识点。</p>
 </blockquote>
+<h3 id="1-元组实现"><a href="#1-元组实现" class="headerlink" title="1. 元组实现"></a>1. 元组实现</h3><p>代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">fibs = [0, 1]</div><div class="line">for i in range(8):</div><div class="line">    fibs.append(fibs[-2] + fibs[-1])</div><div class="line">print(fibs)</div></pre></td></tr></table></figure></p>
           
       
     </div>
@@ -306,7 +306,7 @@
       
       
         <p class="article-more-link">
-          <a href="/2017/05/22/爬虫4/#more">阅读全文 >></a>
+          <a href="/2017/05/23/python1/#more">阅读全文 >></a>
         </p>
       
       <div class="clearfix"></div>
@@ -495,6 +495,69 @@
       
         <p class="article-more-link">
           <a href="/2017/05/05/爬虫5/#more">阅读全文 >></a>
+        </p>
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+
+
+  
+    <article id="post-爬虫4" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2017/05/02/爬虫4/" class="article-date">
+      <time datetime="2017-05-02T11:44:16.000Z" itemprop="datePublished">2017-05-02</time>
+</a>
+
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/05/02/爬虫4/">Python爬虫日记4：Charles抓包获取黑大帐号密码验证码并登录</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+              <h1 id="一：前言"><a href="#一：前言" class="headerlink" title="一：前言"></a>一：前言</h1><p>今天看了一篇安利Charles这个软件的文章，就拿来试试，我们大学的登录页面用开发者模式进去chrome有屏蔽相关模块，用火狐可以正常不过还是抓不到验证码这个js动态数据而且帐号密码的请求后Cookies并找不到。那么这个时候使用抓包软件就是一个好的方法之一了，之前也用过其他抓包软件，比如Fidder，今天用过Charles后才发现还有比Fidder好用的抓包软件，这个比较简洁，数据查找也很直观。</p>
+<blockquote>
+<p><strong>目标：</strong>使用抓包软件Charles对页面数据分析找到帐号密码以及验证码的接口，然后用Python实现模拟登录，并提取登录后的页面。</p>
+</blockquote>
+          
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+
+      
+      
+        <p class="article-more-link">
+          <a href="/2017/05/02/爬虫4/#more">阅读全文 >></a>
         </p>
       
       <div class="clearfix"></div>
