@@ -15,16 +15,20 @@
 
 
 
-<meta name="description" content="布咯咯的python世界">
-<meta property="og:type" content="website">
-<meta property="og:title" content="about">
-<meta property="og:url" content="http://bulolo.cn/about/index.html">
+<meta name="description" content="一、前言今天我要做的是爬取凤凰网资讯的一个即时新闻列表的标题和对应链接，很简单的requests与lxml练习，同时使用xpath。贴出网址：http://news.ifeng.com/listpage/11502/0/1/rtlist.shtml">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Python爬虫日记2：使用lxml解析HTML输出对应值">
+<meta property="og:url" content="http://bulolo.cn/2017/05/22/Python爬虫日记2：使用lxml解析HTML输出对应值/index.html">
 <meta property="og:site_name" content="布咯咯_rieuse的博客">
-<meta property="og:description" content="布咯咯的python世界">
-<meta property="og:updated_time" content="2017-05-22T14:59:27.503Z">
+<meta property="og:description" content="一、前言今天我要做的是爬取凤凰网资讯的一个即时新闻列表的标题和对应链接，很简单的requests与lxml练习，同时使用xpath。贴出网址：http://news.ifeng.com/listpage/11502/0/1/rtlist.shtml">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/4701426-7aaff42d387ccea6.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/4701426-8f61ab5ce62f6e3d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/4701426-6172297303818caf.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:updated_time" content="2017-05-22T15:30:44.356Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="about">
-<meta name="twitter:description" content="布咯咯的python世界">
+<meta name="twitter:title" content="Python爬虫日记2：使用lxml解析HTML输出对应值">
+<meta name="twitter:description" content="一、前言今天我要做的是爬取凤凰网资讯的一个即时新闻列表的标题和对应链接，很简单的requests与lxml练习，同时使用xpath。贴出网址：http://news.ifeng.com/listpage/11502/0/1/rtlist.shtml">
+<meta name="twitter:image" content="http://upload-images.jianshu.io/upload_images/4701426-7aaff42d387ccea6.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
 
 <link rel="apple-touch-icon" href= "/apple-touch-icon.png">
 
@@ -54,7 +58,7 @@
 <link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
 
 
-<title>about | 布咯咯_rieuse的博客</title>
+<title>Python爬虫日记2：使用lxml解析HTML输出对应值 | 布咯咯_rieuse的博客</title>
 
 <script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
 <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
@@ -64,7 +68,7 @@
         fancybox: true,
         animate: false,
         isHome: false,
-        isPost: false,
+        isPost: true,
         isArchive: false,
         isTag: false,
         isCategory: false,
@@ -258,11 +262,11 @@
     </div>
     <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
 </nav>
-      <div class="body-wrap"><article id="page-undefined" class="article article-type-page" itemscope itemprop="blogPost">
+      <div class="body-wrap"><article id="post-Python爬虫日记2：使用lxml解析HTML输出对应值" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/about/index.html" class="article-date">
-      <time datetime="2017-05-22T14:28:05.000Z" itemprop="datePublished">2017-05-22</time>
+      <a href="/2017/05/22/Python爬虫日记2：使用lxml解析HTML输出对应值/" class="article-date">
+      <time datetime="2017-05-22T15:21:05.000Z" itemprop="datePublished">2017-05-22</time>
 </a>
 
 
@@ -277,7 +281,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      about
+      Python爬虫日记2：使用lxml解析HTML输出对应值
     </h1>
   
 
@@ -294,36 +298,96 @@
     <div class="article-entry" itemprop="articleBody">
       
           
-              <style>
-    .article-meta { display: none; }
-    #container .article .article-title { padding-right: 0; }
-    .article-header {
-        padding: 0;
-        padding-top: 26px;
-        border-left: none;
-        text-align: center;
-    }
-    .article-header:hover { border-left: none; }
-    .article-title { font-size: 1.6em }
-    .article-entry hr { margin: 0;}
-    .article-meta,
-    #container .article-info-post.article-info { display: none;}
-    #container .article .article-title { padding: 0; }
-</style>
+        <h1 id="一、前言"><a href="#一、前言" class="headerlink" title="一、前言"></a>一、前言</h1><p>今天我要做的是爬取凤凰网资讯的一个即时新闻列表的标题和对应链接，很简单的requests与lxml练习，同时使用xpath。贴出网址：<a href="http://news.ifeng.com/listpage/11502/0/1/rtlist.shtml" target="_blank" rel="external">http://news.ifeng.com/listpage/11502/0/1/rtlist.shtml</a></p>
+<p><img src="http://upload-images.jianshu.io/upload_images/4701426-7aaff42d387ccea6.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="凤凰资讯.png"><br><a id="more"></a></p>
+<h1 id="二、运行环境"><a href="#二、运行环境" class="headerlink" title="二、运行环境"></a>二、运行环境</h1><ul>
+<li>系统版本<br>Windows10  64位</li>
+<li>Python版本<br>Python3.6  我用的是Anaconda集成版本</li>
+<li>IDE<br>PyCharm 学生可以通过edu邮箱免费使用，不是学生的朋友可以试试社区版。</li>
+</ul>
+<h1 id="三、分析"><a href="#三、分析" class="headerlink" title="三、分析"></a>三、分析</h1><p>解析HTML常用方式有<strong>BeautifulSoup</strong>,<strong>lxml.html</strong>,性能方面lxml要优于BeautifulSoup，BeautifulSoup是基于DOM的，会解析整个DOM树，lxml只会局部遍历。</p>
+<p>python3网络请求常用的有自带的urllib，第三方库requests，使用起来requests还是比urllib更简单明了，而且requests有更强的功能。</p>
+<h1 id="四、实战"><a href="#四、实战" class="headerlink" title="四、实战"></a>四、实战</h1><p>首先导入今天需要的模块requests，lxml.html。</p>
+<pre><code>import requests
+import lxml.html
+</code></pre><p>然后url是目标网址，html保存着这个网页的文本内容，这时候需用lxml来解析它，这样才能提取我们需要的数据。</p>
+<pre><code>url = &apos;http://news.ifeng.com/listpage/11502/0/1/rtlist.shtml&apos;
+html = requests.get(url).text
+doc = lxml.html.fromstring(html)
+</code></pre><p>解析完成后，我们首先提取文章的标题，这里使用了xpath来搜索标题所在的标签，对原网址F12 开发者模式打开可以查询标题。<br><img src="http://upload-images.jianshu.io/upload_images/4701426-8f61ab5ce62f6e3d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="凤凰资讯标题.png"></p>
+<pre><code>titles = doc.xpath(&apos;//div[@class=&quot;newsList&quot;]/ul/li/a/text()&apos;)
+href = doc.xpath(&apos;//div[@class=&quot;newsList&quot;]/ul/li/a/@href&apos;)
+</code></pre><p>这里第一行是将网页中的符合标题的内容都传给titles变量中，第二行是将标题所在的网址全部传给href。</p>
+<p>说到这个xpath查询有很多人不太会用，或者觉得很麻烦，不过这里推荐一款xpath查询插件，这样我们查询目标的时候就很容易获取了。这款chrome插件是xpath heper ，安装好之后我们重新打开浏览器按ctrl+shift+x就能调出xpath-helper框了，按shift配合鼠标可以切换查询的目标。</p>
+<p>最后一步：将标题和对应的网址结合起来，遍历后输出即可看到结果<br>    i = 0<br>    for content in titles:<br>        results = {<br>            ‘标题’:titles[i],<br>            ‘链接’:href[i]<br>        }<br>        i += 1<br>        print(results)</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/4701426-6172297303818caf.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="凤凰资讯2.png"></p>
+<h1 id="五、总结"><a href="#五、总结" class="headerlink" title="五、总结"></a>五、总结</h1><p>查询标签用BeautifulSoup也挺合适的，这次为了练习一下就使用了lxml 配合xpath。继续努力，给自己加油！ヾ(o◕∀◕)ﾉヾ</p>
 
-
-          
-        
       
     </div>
     
   </div>
   
     
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/2017/05/22/Python爬虫日记2：使用lxml解析HTML输出对应值/">Python爬虫日记2：使用lxml解析HTML输出对应值</a></p>
+        <p><span>文章作者:</span><a href="/" title="回到主页">布咯咯_rieuse</a></p>
+        <p><span>发布时间:</span>2017-05-22, 23:21:05</p>
+        <p><span>最后更新:</span>2017-05-22, 23:30:44</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/2017/05/22/Python爬虫日记2：使用lxml解析HTML输出对应值/" title="Python爬虫日记2：使用lxml解析HTML输出对应值">http://bulolo.cn/2017/05/22/Python爬虫日记2：使用lxml解析HTML输出对应值/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://bulolo.cn/2017/05/22/Python爬虫日记2：使用lxml解析HTML输出对应值/　　作者: 布咯咯_rieuse" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target = "_blank">"署名-非商用-相同方式共享 4.0"</a> 转载请保留原文链接及作者。
+        </p>
+    </div>
 
+
+
+    <nav id="article-nav">
+        
+            <div id="article-nav-newer" class="article-nav-title">
+                <a href="/2017/05/22/Python爬虫日记3：爬取v2ex数据用csv保存/">
+                    Python爬虫日记3：爬取v2ex数据用csv保存
+                </a>
+            </div>
+        
+        
+            <div id="article-nav-older" class="article-nav-title">
+                <a href="/2017/05/22/Python爬虫日记1：爬取豆瓣电影中速度与激情8演员图片/">
+                    Python爬虫日记1：爬取豆瓣电影中速度与激情8演员图片
+                </a>
+            </div>
+        
+    </nav>
 
   
 </article>
+
+    <div id="toc" class="toc-article">
+        <strong class="toc-title">文章目录</strong>
+        
+            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#一、前言"><span class="toc-number">1.</span> <span class="toc-text">一、前言</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#二、运行环境"><span class="toc-number">2.</span> <span class="toc-text">二、运行环境</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#三、分析"><span class="toc-number">3.</span> <span class="toc-text">三、分析</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#四、实战"><span class="toc-number">4.</span> <span class="toc-text">四、实战</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#五、总结"><span class="toc-number">5.</span> <span class="toc-text">五、总结</span></a></li></ol>
+        
+    </div>
+    <style>
+        .left-col .switch-btn,
+        .left-col .switch-area {
+            display: none;
+        }
+        .toc-level-3 i,
+        .toc-level-3 ol {
+            display: none !important;
+        }
+    </style>
+
+    <input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+
+    <script>
+        yiliaConfig.toc = ["隐藏目录", "显示目录", !!"false"];
+    </script>
 
 
 
@@ -341,7 +405,7 @@
         </div>
         <script>
             window._bd_share_config={
-                "common":{"bdSnsKey":{},"bdText":"about　| 布咯咯_rieuse的博客　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+                "common":{"bdSnsKey":{},"bdText":"Python爬虫日记2：使用lxml解析HTML输出对应值　| 布咯咯_rieuse的博客　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
         </script>
     
 
@@ -356,6 +420,26 @@
 
     
 
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/2017/05/22/Python爬虫日记3：爬取v2ex数据用csv保存/" title="上一篇: Python爬虫日记3：爬取v2ex数据用csv保存">
+                <i class="fa fa-angle-left"></i>
+            </a>
+        
+
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+
+        
+            <a href="/2017/05/22/Python爬虫日记1：爬取豆瓣电影中速度与激情8演员图片/" title="下一篇: Python爬虫日记1：爬取豆瓣电影中速度与激情8演员图片">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2017/05/22/爬虫7/">爬虫7</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/05/22/爬虫6/">爬虫6</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/05/22/爬虫5/">爬虫5</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/05/22/Python爬虫日记4：Charles抓包获取黑大帐号密码验证码并登录/">Python爬虫日记4：Charles抓包获取黑大帐号密码验证码并登录</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/05/22/Python爬虫日记3：爬取v2ex数据用csv保存/">Python爬虫日记3：爬取v2ex数据用csv保存</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/05/22/Python爬虫日记2：使用lxml解析HTML输出对应值/">Python爬虫日记2：使用lxml解析HTML输出对应值</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/05/22/Python爬虫日记1：爬取豆瓣电影中速度与激情8演员图片/">Python爬虫日记1：爬取豆瓣电影中速度与激情8演员图片</a></li></ul>
 
 
 

@@ -15,16 +15,21 @@
 
 
 
-<meta name="description" content="布咯咯的python世界">
-<meta property="og:type" content="website">
-<meta property="og:title" content="about">
-<meta property="og:url" content="http://bulolo.cn/about/index.html">
+<meta name="description" content="一、前言这是我第一次写文章，作为一个非计算机，编程类专业的大二学生，我希望能够给像我这样的入门的朋友一些帮助，也同时激励自己努力写代码。好了废话不多说，今天我做的爬虫是豆瓣的一个电影——速度与激情8的全部影人页面，贴出网址：速度与激情8 全部影人。目标：爬取速度与激情8中全部影人的图片并且用图中人物的名字给图片文件命名，最后保存在电脑中。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="爬虫一">
+<meta property="og:url" content="http://bulolo.cn/2017/05/22/爬虫一/index.html">
 <meta property="og:site_name" content="布咯咯_rieuse的博客">
-<meta property="og:description" content="布咯咯的python世界">
-<meta property="og:updated_time" content="2017-05-22T14:59:27.503Z">
+<meta property="og:description" content="一、前言这是我第一次写文章，作为一个非计算机，编程类专业的大二学生，我希望能够给像我这样的入门的朋友一些帮助，也同时激励自己努力写代码。好了废话不多说，今天我做的爬虫是豆瓣的一个电影——速度与激情8的全部影人页面，贴出网址：速度与激情8 全部影人。目标：爬取速度与激情8中全部影人的图片并且用图中人物的名字给图片文件命名，最后保存在电脑中。">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/4701426-e240ffe03f1ae5d5.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/4701426-a5412a6886373783.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/4701426-409edabe4ba6433c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/4701426-5c08e5da83f42dab.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:updated_time" content="2017-05-22T15:17:04.345Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="about">
-<meta name="twitter:description" content="布咯咯的python世界">
+<meta name="twitter:title" content="爬虫一">
+<meta name="twitter:description" content="一、前言这是我第一次写文章，作为一个非计算机，编程类专业的大二学生，我希望能够给像我这样的入门的朋友一些帮助，也同时激励自己努力写代码。好了废话不多说，今天我做的爬虫是豆瓣的一个电影——速度与激情8的全部影人页面，贴出网址：速度与激情8 全部影人。目标：爬取速度与激情8中全部影人的图片并且用图中人物的名字给图片文件命名，最后保存在电脑中。">
+<meta name="twitter:image" content="http://upload-images.jianshu.io/upload_images/4701426-e240ffe03f1ae5d5.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
 
 <link rel="apple-touch-icon" href= "/apple-touch-icon.png">
 
@@ -54,7 +59,7 @@
 <link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
 
 
-<title>about | 布咯咯_rieuse的博客</title>
+<title>爬虫一 | 布咯咯_rieuse的博客</title>
 
 <script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
 <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
@@ -64,7 +69,7 @@
         fancybox: true,
         animate: false,
         isHome: false,
-        isPost: false,
+        isPost: true,
         isArchive: false,
         isTag: false,
         isCategory: false,
@@ -258,11 +263,11 @@
     </div>
     <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
 </nav>
-      <div class="body-wrap"><article id="page-undefined" class="article article-type-page" itemscope itemprop="blogPost">
+      <div class="body-wrap"><article id="post-爬虫一" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/about/index.html" class="article-date">
-      <time datetime="2017-05-22T14:28:05.000Z" itemprop="datePublished">2017-05-22</time>
+      <a href="/2017/05/22/爬虫一/" class="article-date">
+      <time datetime="2017-05-22T15:13:19.000Z" itemprop="datePublished">2017-05-22</time>
 </a>
 
 
@@ -277,7 +282,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      about
+      爬虫一
     </h1>
   
 
@@ -294,36 +299,100 @@
     <div class="article-entry" itemprop="articleBody">
       
           
-              <style>
-    .article-meta { display: none; }
-    #container .article .article-title { padding-right: 0; }
-    .article-header {
-        padding: 0;
-        padding-top: 26px;
-        border-left: none;
-        text-align: center;
-    }
-    .article-header:hover { border-left: none; }
-    .article-title { font-size: 1.6em }
-    .article-entry hr { margin: 0;}
-    .article-meta,
-    #container .article-info-post.article-info { display: none;}
-    #container .article .article-title { padding: 0; }
-</style>
+        <h1 id="一、前言"><a href="#一、前言" class="headerlink" title="一、前言"></a>一、前言</h1><p>这是我第一次写文章，作为一个非计算机，编程类专业的大二学生，我希望能够给像我这样的入门的朋友一些帮助，也同时激励自己努力写代码。好了废话不多说，今天我做的爬虫是豆瓣的一个电影——速度与激情8的全部影人页面，贴出网址：<a href="https://movie.douban.com/subject/26260853/celebrities" target="_blank" rel="external">速度与激情8 全部影人</a>。<br><strong>目标</strong>：爬取速度与激情8中全部影人的图片并且用图中人物的名字给图片文件命名，最后保存在电脑中。<br><a id="more"></a><br><img src="http://upload-images.jianshu.io/upload_images/4701426-e240ffe03f1ae5d5.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="豆瓣1.png"></p>
+<h1 id="二、运行环境"><a href="#二、运行环境" class="headerlink" title="二、运行环境"></a>二、运行环境</h1><ul>
+<li>系统版本<br>Windows10  64位</li>
+<li>Python版本<br>Python3.6  我用的是Anaconda集成版本</li>
+<li>IDE<br>PyCharm 学生可以通过edu邮箱免费使用，不是学生的朋友可以试试社区版，不明白怎么安装的可以留言或者 私信我。</li>
+</ul>
+<h1 id="三、分析"><a href="#三、分析" class="headerlink" title="三、分析"></a>三、分析</h1><p>爬虫的三个要点：请求，解析，存储<br><strong>请求</strong>可以使用urllib Requests ，其中urllib是自带的，  Requests是第三方库，功能更强大，本次使用的是urllib。<br><strong>解析</strong>我用的有正则表达式，xpath，本次使用的是正则表达式，主要是想自己用正则来练练 只看正则的说明不能理解其中的奥秘ヾ(o◕∀◕)ﾉヾ，必须多试试。<br><strong>储存</strong>常用的有保存到内存，数据库，硬盘中，本次是保存到电脑硬盘中</p>
+<h1 id="四、实战"><a href="#四、实战" class="headerlink" title="四、实战"></a>四、实战</h1><p>首先导入我们需要的模块<br><code>import urllib.request
+ import os
+ import re</code><br>urllib.request是用来请求的，os是操作文件目录常用的模块，re是python中正则表达式的模块，<br><code>url = &#39;https://movie.douban.com/subject/26260853/celebrities&#39;
+ r = urllib.request.urlopen(url)
+ html = r.read().decode(&#39;utf-8&#39;)</code><br>第一行很明显是本次爬虫的网页， r = urllib.request.urlopen(url)用来打开网页， r.read()是读取网页内容，decode(‘utf-8’)是用utf-8编码对字符串str进行解码，以获取unicode。</p>
+<p>之后我们来获取一下图片的地址，用Chrome浏览器打开速度与激情8的全部影人页面，按下F12，分析一下，可知每个人的照片地址都是img1或者3.doubanio.com/img/celebrity/medium/几个数字.jpg</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/4701426-a5412a6886373783.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Paste_Image.png"><br>我们使用正则表达式来匹配一下这些图片地址，1或者3部分用\d匹配，末尾数字部分用.*来匹配即可。<br><code>result = re.findall(r&#39;https://img\d.doubanio.com/img/celebrity/medium/.*.jpg&#39;,html)</code><br>现在图片地址也有了，还需要把这些人物的名字给爬下来,之后才能配对文件，再次分析一下刚才的网址。看到这些人物的名字都是以title=开头，我们就用它来正则匹配一下，来获取全部的人物名字，放进一个列表中。<br><img src="http://upload-images.jianshu.io/upload_images/4701426-409edabe4ba6433c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Paste_Image.png"><br><code>result2 = re.findall(r&#39;(?&lt;=title=&quot;).\S+&#39;, html)
+ result2.pop()
+ result3 = sorted(set(result2), key=result2.index)
+ result3.pop(-3)</code><br>第一行代码中re.findall(r’(?&lt;=title=”).\S+’, html)用来匹配截图中title=”后面的名字<br>第二行代码中pop()是去除最后一个元素，因为前面匹配后的列表中有一个非人物名字的元素所以我们就需要把它去掉<br>第三行代码中sorted(set(result2), key=result2.index)有两个功能，一个是使用set()集合函数来去除列表中重复元素，另一个是sorted(）函数是给列表排序用的，key=result2.index的意思是以result2原来的索引顺序来给新的列表排序，因为每张图片很名字是对应的，如果单单使用set()，虽然重复的去除了但是顺序也变了，所以我们需要利用sort()结合key=result2.index来排序才行。<br>result3.pop(-3)意思是删除result3中倒数第三个元素，因为克里斯·摩根这个没照片所以我就把他删了。</p>
+<p>之后我们来给本地创建一个文件夹用来保存图片，这里就用到了os模块<br><code>if not os.path.exists(&#39;douban&#39;):
+    os.makedirs(&#39;douban&#39;)</code></p>
+<p>之后需要的是下载这些人物图片，利用之前爬取的人物名字给对应图片命名并保存。<br> <code>i = 0
+for link in result:
+    filename = &#39;douban\&#39; + str(result3[i])+ &#39;.jpg&#39;
+    i += 1
+    with open(filename, &#39;w&#39;) as file:
+        urllib.request.urlretrieve(link, filename)</code></p>
+<p>完整代码贴出来，需要的同学可以试试。<br><code>import urllib.request
+import os
+import re
+url = &#39;https://movie.douban.com/subject/26260853/celebrities&#39;
+r = urllib.request.urlopen(url)
+html = r.read().decode(&#39;utf-8&#39;)
+result = re.findall(r&#39;https://img\d.doubanio.com/img/celebrity/medium/.*.jpg&#39;, html)
+result2 = re.findall(r&#39;(?&lt;=title=&quot;).\S+&#39;, html)
+result2.pop()
+result3 = sorted(set(result2), key=result2.index)
+result3.pop(-3)
+if not os.path.exists(&#39;douban&#39;):
+    os.makedirs(&#39;douban&#39;)
+i = 0
+for link in result:
+    filename = &#39;douban\\&#39; + str(result3[i]) + &#39;.jpg&#39;
+    i += 1
+    with open(filename, &#39;w&#39;) as file:
+        urllib.request.urlretrieve(link, filename)</code></p>
+<h1 id="五、总结"><a href="#五、总结" class="headerlink" title="五、总结"></a>五、总结</h1><p>最后效果，图片都下载在我刚才指定的文件夹中了。<br><img src="http://upload-images.jianshu.io/upload_images/4701426-5c08e5da83f42dab.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Paste_Image.png"><br>第一次写文章，对很多东西不是很熟悉，如果有任何问题，请多多指教。</p>
 
-
-          
-        
       
     </div>
     
   </div>
   
     
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/2017/05/22/爬虫一/">爬虫一</a></p>
+        <p><span>文章作者:</span><a href="/" title="回到主页">布咯咯_rieuse</a></p>
+        <p><span>发布时间:</span>2017-05-22, 23:13:19</p>
+        <p><span>最后更新:</span>2017-05-22, 23:17:04</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/2017/05/22/爬虫一/" title="爬虫一">http://bulolo.cn/2017/05/22/爬虫一/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://bulolo.cn/2017/05/22/爬虫一/　　作者: 布咯咯_rieuse" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target = "_blank">"署名-非商用-相同方式共享 4.0"</a> 转载请保留原文链接及作者。
+        </p>
+    </div>
+
 
 
   
 </article>
+
+    <div id="toc" class="toc-article">
+        <strong class="toc-title">文章目录</strong>
+        
+            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#一、前言"><span class="toc-number">1.</span> <span class="toc-text">一、前言</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#二、运行环境"><span class="toc-number">2.</span> <span class="toc-text">二、运行环境</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#三、分析"><span class="toc-number">3.</span> <span class="toc-text">三、分析</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#四、实战"><span class="toc-number">4.</span> <span class="toc-text">四、实战</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#五、总结"><span class="toc-number">5.</span> <span class="toc-text">五、总结</span></a></li></ol>
+        
+    </div>
+    <style>
+        .left-col .switch-btn,
+        .left-col .switch-area {
+            display: none;
+        }
+        .toc-level-3 i,
+        .toc-level-3 ol {
+            display: none !important;
+        }
+    </style>
+
+    <input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+
+    <script>
+        yiliaConfig.toc = ["隐藏目录", "显示目录", !!"false"];
+    </script>
 
 
 
@@ -341,7 +410,7 @@
         </div>
         <script>
             window._bd_share_config={
-                "common":{"bdSnsKey":{},"bdText":"about　| 布咯咯_rieuse的博客　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+                "common":{"bdSnsKey":{},"bdText":"爬虫一　| 布咯咯_rieuse的博客　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
         </script>
     
 
@@ -356,6 +425,22 @@
 
     
 
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/" title="回到主页"><i class="fa fa-home"></i></a>
+        
+
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+
+        
+            <a href="/" title="回到主页"><i class="fa fa-home"></i></a>
+        
+    </div>
+
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2017/05/22/爬虫一/">爬虫一</a></li></ul>
 
 
 
@@ -409,7 +494,7 @@
                 $("body").css({"background-color": bgColorList[bgColor], "background-size": "cover"});
             }
             else {
-                var backgroundnum = 3;
+                var backgroundnum = 5;
                 var backgroundimg = "url(/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
                 $("body").css({"background": backgroundimg, "background-attachment": "fixed", "background-size": "cover"});
             }
