@@ -25,7 +25,7 @@
 <meta property="og:image" content="http://upload-images.jianshu.io/upload_images/4701426-a5412a6886373783.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
 <meta property="og:image" content="http://upload-images.jianshu.io/upload_images/4701426-409edabe4ba6433c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
 <meta property="og:image" content="http://upload-images.jianshu.io/upload_images/4701426-5c08e5da83f42dab.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
-<meta property="og:updated_time" content="2017-05-23T04:58:35.213Z">
+<meta property="og:updated_time" content="2017-05-23T10:52:50.437Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Python爬虫日记1：爬取豆瓣电影中速度与激情8演员图片">
 <meta name="twitter:description" content="一、前言这是我第一次写文章，作为一个非计算机，编程类专业的大二学生，我希望能够给像我这样的入门的朋友一些帮助，也同时激励自己努力写代码。好了废话不多说，今天我做的爬虫是豆瓣的一个电影——速度与激情8的全部影人页面，贴出网址：速度与激情8 全部影人。目标：爬取速度与激情8中全部影人的图片并且用图中人物的名字给图片文件命名，最后保存在电脑中。">
@@ -306,43 +306,17 @@
 <li>IDE<br>PyCharm 学生可以通过edu邮箱免费使用，不是学生的朋友可以试试社区版，不明白怎么安装的可以留言或者 私信我。</li>
 </ul>
 <h1 id="三、分析"><a href="#三、分析" class="headerlink" title="三、分析"></a>三、分析</h1><p>爬虫的三个要点：请求，解析，存储<br><strong>请求</strong>可以使用urllib Requests ，其中urllib是自带的，  Requests是第三方库，功能更强大，本次使用的是urllib。<br><strong>解析</strong>我用的有正则表达式，xpath，本次使用的是正则表达式，主要是想自己用正则来练练 只看正则的说明不能理解其中的奥秘ヾ(o◕∀◕)ﾉヾ，必须多试试。<br><strong>储存</strong>常用的有保存到内存，数据库，硬盘中，本次是保存到电脑硬盘中</p>
-<h1 id="四、实战"><a href="#四、实战" class="headerlink" title="四、实战"></a>四、实战</h1><p>首先导入我们需要的模块<br><code>import urllib.request
- import os
- import re</code><br>urllib.request是用来请求的，os是操作文件目录常用的模块，re是python中正则表达式的模块，<br><code>url = &#39;https://movie.douban.com/subject/26260853/celebrities&#39;
- r = urllib.request.urlopen(url)
- html = r.read().decode(&#39;utf-8&#39;)</code><br>第一行很明显是本次爬虫的网页， r = urllib.request.urlopen(url)用来打开网页， r.read()是读取网页内容，decode(‘utf-8’)是用utf-8编码对字符串str进行解码，以获取unicode。</p>
+<h1 id="四、实战"><a href="#四、实战" class="headerlink" title="四、实战"></a>四、实战</h1><p>首先导入我们需要的模块<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">import urllib.request</div><div class="line">import os</div><div class="line">import re</div></pre></td></tr></table></figure></p>
+<p>urllib.request是用来请求的，os是操作文件目录常用的模块，re是python中正则表达式的模块，<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">url = &apos;https://movie.douban.com/subject/26260853/celebrities&apos;</div><div class="line">r = urllib.request.urlopen(url)</div><div class="line">html = r.read().decode(&apos;utf-8&apos;)</div></pre></td></tr></table></figure></p>
+<p>第一行很明显是本次爬虫的网页， r = urllib.request.urlopen(url)用来打开网页， r.read()是读取网页内容，decode(‘utf-8’)是用utf-8编码对字符串str进行解码，以获取unicode。</p>
 <p>之后我们来获取一下图片的地址，用Chrome浏览器打开速度与激情8的全部影人页面，按下F12，分析一下，可知每个人的照片地址都是img1或者3.doubanio.com/img/celebrity/medium/几个数字.jpg</p>
-<p><img src="http://upload-images.jianshu.io/upload_images/4701426-a5412a6886373783.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Paste_Image.png"><br>我们使用正则表达式来匹配一下这些图片地址，1或者3部分用\d匹配，末尾数字部分用.*来匹配即可。<br><code>result = re.findall(r&#39;https://img\d.doubanio.com/img/celebrity/medium/.*.jpg&#39;,html)</code><br>现在图片地址也有了，还需要把这些人物的名字给爬下来,之后才能配对文件，再次分析一下刚才的网址。看到这些人物的名字都是以title=开头，我们就用它来正则匹配一下，来获取全部的人物名字，放进一个列表中。<br><img src="http://upload-images.jianshu.io/upload_images/4701426-409edabe4ba6433c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Paste_Image.png"><br><code>result2 = re.findall(r&#39;(?&lt;=title=&quot;).\S+&#39;, html)
- result2.pop()
- result3 = sorted(set(result2), key=result2.index)
- result3.pop(-3)</code><br>第一行代码中re.findall(r’(?&lt;=title=”).\S+’, html)用来匹配截图中title=”后面的名字<br>第二行代码中pop()是去除最后一个元素，因为前面匹配后的列表中有一个非人物名字的元素所以我们就需要把它去掉<br>第三行代码中sorted(set(result2), key=result2.index)有两个功能，一个是使用set()集合函数来去除列表中重复元素，另一个是sorted(）函数是给列表排序用的，key=result2.index的意思是以result2原来的索引顺序来给新的列表排序，因为每张图片很名字是对应的，如果单单使用set()，虽然重复的去除了但是顺序也变了，所以我们需要利用sort()结合key=result2.index来排序才行。<br>result3.pop(-3)意思是删除result3中倒数第三个元素，因为克里斯·摩根这个没照片所以我就把他删了。</p>
-<p>之后我们来给本地创建一个文件夹用来保存图片，这里就用到了os模块<br><code>if not os.path.exists(&#39;douban&#39;):
-    os.makedirs(&#39;douban&#39;)</code></p>
-<p>之后需要的是下载这些人物图片，利用之前爬取的人物名字给对应图片命名并保存。<br> <code>i = 0
-for link in result:
-    filename = &#39;douban\&#39; + str(result3[i])+ &#39;.jpg&#39;
-    i += 1
-    with open(filename, &#39;w&#39;) as file:
-        urllib.request.urlretrieve(link, filename)</code></p>
-<p>完整代码贴出来，需要的同学可以试试。<br><code>import urllib.request
-import os
-import re
-url = &#39;https://movie.douban.com/subject/26260853/celebrities&#39;
-r = urllib.request.urlopen(url)
-html = r.read().decode(&#39;utf-8&#39;)
-result = re.findall(r&#39;https://img\d.doubanio.com/img/celebrity/medium/.*.jpg&#39;, html)
-result2 = re.findall(r&#39;(?&lt;=title=&quot;).\S+&#39;, html)
-result2.pop()
-result3 = sorted(set(result2), key=result2.index)
-result3.pop(-3)
-if not os.path.exists(&#39;douban&#39;):
-    os.makedirs(&#39;douban&#39;)
-i = 0
-for link in result:
-    filename = &#39;douban\\&#39; + str(result3[i]) + &#39;.jpg&#39;
-    i += 1
-    with open(filename, &#39;w&#39;) as file:
-        urllib.request.urlretrieve(link, filename)</code></p>
+<p><img src="http://upload-images.jianshu.io/upload_images/4701426-a5412a6886373783.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Paste_Image.png"><br>我们使用正则表达式来匹配一下这些图片地址，1或者3部分用\d匹配，末尾数字部分用.*来匹配即可。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">result = re.findall(r&apos;https://img\d.doubanio.com/img/celebrity/medium/.*.jpg&apos;,html)</div></pre></td></tr></table></figure></p>
+<p>现在图片地址也有了，还需要把这些人物的名字给爬下来,之后才能配对文件，再次分析一下刚才的网址。看到这些人物的名字都是以title=开头，我们就用它来正则匹配一下，来获取全部的人物名字，放进一个列表中。<br><img src="http://upload-images.jianshu.io/upload_images/4701426-409edabe4ba6433c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Paste_Image.png"><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">result2 = re.findall(r&apos;(?&lt;=title=&quot;).\S+&apos;, html)</div><div class="line">result2.pop()</div><div class="line">result3 = sorted(set(result2), key=result2.index)</div><div class="line">result3.pop(-3)</div></pre></td></tr></table></figure></p>
+<p>第一行代码中re.findall(r’(?&lt;=title=”).\S+’, html)用来匹配截图中title=”后面的名字<br>第二行代码中pop()是去除最后一个元素，因为前面匹配后的列表中有一个非人物名字的元素所以我们就需要把它去掉<br>第三行代码中sorted(set(result2), key=result2.index)有两个功能，一个是使用set()集合函数来去除列表中重复元素，另一个是sorted(）函数是给列表排序用的，key=result2.index的意思是以result2原来的索引顺序来给新的列表排序，因为每张图片很名字是对应的，如果单单使用set()，虽然重复的去除了但是顺序也变了，所以我们需要利用sort()结合key=result2.index来排序才行。<br>result3.pop(-3)意思是删除result3中倒数第三个元素，因为克里斯·摩根这个没照片所以我就把他删了。</p>
+<p>之后我们来给本地创建一个文件夹用来保存图片，这里就用到了os模块<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">if not os.path.exists(&apos;douban&apos;):</div><div class="line">    os.makedirs(&apos;douban&apos;)</div></pre></td></tr></table></figure></p>
+<p>之后需要的是下载这些人物图片，利用之前爬取的人物名字给对应图片命名并保存。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">i = 0</div><div class="line">for link in result:</div><div class="line">    filename = &apos;douban\&apos; + str(result3[i])+ &apos;.jpg&apos;</div><div class="line">    i += 1</div><div class="line">    with open(filename, &apos;w&apos;) as file:</div><div class="line">        urllib.request.urlretrieve(link, filename)</div></pre></td></tr></table></figure>
+<p>完整代码贴出来，需要的同学可以试试。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">import urllib.request</div><div class="line">import os</div><div class="line">import re</div><div class="line">url = &apos;https://movie.douban.com/subject/26260853/celebrities&apos;</div><div class="line">r = urllib.request.urlopen(url)</div><div class="line">html = r.read().decode(&apos;utf-8&apos;)</div><div class="line">result = re.findall(r&apos;https://img\d.doubanio.com/img/celebrity/medium/.*.jpg&apos;, html)</div><div class="line">result2 = re.findall(r&apos;(?&lt;=title=&quot;).\S+&apos;, html)</div><div class="line">result2.pop()</div><div class="line">result3 = sorted(set(result2), key=result2.index)</div><div class="line">result3.pop(-3)</div><div class="line">if not os.path.exists(&apos;douban&apos;):</div><div class="line">    os.makedirs(&apos;douban&apos;)</div><div class="line">i = 0</div><div class="line">for link in result:</div><div class="line">    filename = &apos;douban\\&apos; + str(result3[i]) + &apos;.jpg&apos;</div><div class="line">    i += 1</div><div class="line">    with open(filename, &apos;w&apos;) as file:</div><div class="line">        urllib.request.urlretrieve(link, filename)</div></pre></td></tr></table></figure></p>
 <h1 id="五、总结"><a href="#五、总结" class="headerlink" title="五、总结"></a>五、总结</h1><p>最后效果，图片都下载在我刚才指定的文件夹中了。<br><img src="http://upload-images.jianshu.io/upload_images/4701426-5c08e5da83f42dab.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Paste_Image.png"><br>第一次写文章，对很多东西不是很熟悉，如果有任何问题，请多多指教。</p>
 
       
@@ -355,7 +329,7 @@ for link in result:
         <p><span>本文标题:</span><a href="/2017/04/27/爬虫1/">Python爬虫日记1：爬取豆瓣电影中速度与激情8演员图片</a></p>
         <p><span>文章作者:</span><a href="/" title="回到主页">布咯咯_rieuse</a></p>
         <p><span>发布时间:</span>2017-04-27, 16:34:19</p>
-        <p><span>最后更新:</span>2017-05-23, 12:58:35</p>
+        <p><span>最后更新:</span>2017-05-23, 18:52:50</p>
         <p>
             <span>原始链接:</span><a class="post-url" href="/2017/04/27/爬虫1/" title="Python爬虫日记1：爬取豆瓣电影中速度与激情8演员图片">http://bulolo.cn/2017/04/27/爬虫1/</a>
             <span class="copy-path" data-clipboard-text="原文: http://bulolo.cn/2017/04/27/爬虫1/　　作者: 布咯咯_rieuse" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
@@ -385,7 +359,7 @@ for link in result:
     <div id="toc" class="toc-article">
         <strong class="toc-title">文章目录</strong>
         
-            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#一、前言"><span class="toc-number">1.</span> <span class="toc-text">一、前言</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#二、运行环境"><span class="toc-number">2.</span> <span class="toc-text">二、运行环境</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#三、分析"><span class="toc-number">3.</span> <span class="toc-text">三、分析</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#四、实战"><span class="toc-number">4.</span> <span class="toc-text">四、实战</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#五、总结"><span class="toc-number">5.</span> <span class="toc-text">五、总结</span></a></li></ol>
+            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#一、前言"><span class="toc-text">一、前言</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#二、运行环境"><span class="toc-text">二、运行环境</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#三、分析"><span class="toc-text">三、分析</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#四、实战"><span class="toc-text">四、实战</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#五、总结"><span class="toc-text">五、总结</span></a></li></ol>
         
     </div>
     <style>

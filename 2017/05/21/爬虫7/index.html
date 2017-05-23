@@ -28,7 +28,7 @@
 <meta property="og:image" content="http://upload-images.jianshu.io/upload_images/4701426-8e96a09519b2fa7b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
 <meta property="og:image" content="http://upload-images.jianshu.io/upload_images/4701426-15c45e7520131b7f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
 <meta property="og:image" content="http://upload-images.jianshu.io/upload_images/4701426-a2c3ad6cc56eed72.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
-<meta property="og:updated_time" content="2017-05-23T05:07:49.870Z">
+<meta property="og:updated_time" content="2017-05-23T10:57:07.082Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Python爬虫日记7：批量抓取花瓣网高清美图并保存">
 <meta name="twitter:description" content="一：前言嘀嘀嘀，上车请刷卡。昨天看到了不错的图片分享网——花瓣，里面的图片质量还不错，所以利用selenium+xpath我把它的妹子的栏目下爬取了下来，以图片栏目名称给文件夹命名分类保存到电脑中。这个妹子主页http://huaban.com/boards/favorite/beauty 是动态加载的，如果想获取更多内容可以模拟下拉，这样就可以更多的图片资源。这种之前爬虫中也做过，但是因为网速不">
@@ -325,29 +325,12 @@
 <p>4.下面的代码就是解析本次主页面<a href="http://huaban.com/boards/favorite/beauty/" target="_blank" rel="external">http://huaban.com/boards/favorite/beauty/</a> 然后获取到每个栏目的网址和栏目的名称，使用xpath来获取栏目的网页时，进入网页开发者模式后，如图所示进行操作。之后需要用栏目名称在电脑中建立文件夹，所以在这个网页中要获取到栏目的名称，这里遇到一个问题，一些名称不符合文件命名规则要剔除，我这里就是一个 * 影响了。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">def get_main_url():</div><div class="line">    print(&apos;打开主页搜寻链接中...&apos;)</div><div class="line">    try:</div><div class="line">        doc = parser(&apos;http://huaban.com/boards/favorite/beauty/&apos;, &apos;# waterfall&apos;)</div><div class="line">        name = doc.xpath(&apos;//*[@id=&quot;waterfall&quot;]/div/a[1]/div[2]/h3/text()&apos;)</div><div class="line">        u = doc.xpath(&apos;//*[@id=&quot;waterfall&quot;]/div/a[1]/@href&apos;)</div><div class="line">        for item, fileName in zip(u, name):</div><div class="line">            main_url = &apos;http://huaban.com&apos; + item</div><div class="line">            print(&apos;主链接已找到&apos; + main_url)</div><div class="line">            if &apos;*&apos; in fileName:</div><div class="line">                fileName = fileName.replace(&apos;*&apos;, &apos;&apos;)</div><div class="line">            download(main_url, fileName)</div><div class="line">    except Exception as e:</div><div class="line">        print(e)</div></pre></td></tr></table></figure></p>
 <p><img src="http://upload-images.jianshu.io/upload_images/4701426-15c45e7520131b7f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Paste_Image.png"></p>
 <p>5.前面已经获取到栏目的网页和栏目的名称，这里就需要对栏目的网页分析，进入栏目网页后，只是一些缩略图，我们不想要这些低分辨率的图片，所以要再进入每个缩略图中，解析网页获取到真正的高清图片网址。这里也有一个地方比较坑人，就是一个栏目中，不同的图片存放dom格式不一样，所以我这样做<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">img_url = doc.xpath(&apos;//*[@id=&quot;baidu_image_holder&quot;]/a/img/@src&apos;)</div><div class="line">img_url2 = doc.xpath(&apos;//*[@id=&quot;baidu_image_holder&quot;]/img/@src&apos;)</div></pre></td></tr></table></figure></p>
-<p>这就把两种dom格式中的图片地址都获取了，然后把两个地址list合并一下。<figure class="highlight plain"><figcaption><span>+=img_url2```</span></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">在本地创建文件夹使用```filename = &apos;image\\&#123;&#125;\\&apos;.format(fileName) + str(i) + &apos;.jpg&apos;```表示文件保存在与这个爬虫代码同级目录image下，然后获取的图片保存在image中按照之前获取的栏目名称的文件夹中。</div></pre></td></tr></table></figure></p>
-<p>def download(main_url, fileName):<br>    print(‘——-准备下载中——-‘)<br>    try:<br>        doc = parser(main_url, ‘# waterfall’)<br>        if not os.path.exists(‘image\‘ + fileName):<br>            print(‘创建文件夹…’)<br>            os.makedirs(‘image\‘ + fileName)<br>        link = doc.xpath(‘//*[@id=”waterfall”]/div/a/@href’)</p>
-<pre><code>    #  print(link)
-    i = 0
-    for item in link:
-        i += 1
-        minor_url = &apos;http://huaban.com&apos; + item
-        doc = parser(minor_url, &apos;# pin_view_page&apos;)
-        img_url = doc.xpath(&apos;//*[@id=&quot;baidu_image_holder&quot;]/a/img/@src&apos;)
-        img_url2 = doc.xpath(&apos;//*[@id=&quot;baidu_image_holder&quot;]/img/@src&apos;)
-        img_url +=img_url2
-        try:
-            url = &apos;http:&apos; + str(img_url[0])
-            print(&apos;正在下载第&apos; + str(i) + &apos;张图片，地址：&apos; + url)
-            r = requests.get(url)
-            filename = &apos;image\\{}\\&apos;.format(fileName) + str(i) + &apos;.jpg&apos;
-            with open(filename, &apos;wb&apos;) as fo:
-                fo.write(r.content)
-        except Exception:
-            print(&apos;出错了！&apos;)
-except Exception:
-    print(&apos;出错啦!&apos;)
-</code></pre><p>if <strong>name</strong> == ‘<strong>main</strong>‘:<br>    get_main_url()<br>```</p>
+<p>这就把两种dom格式中的图片地址都获取了，然后把两个地址list合并一下。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">img_url +=img_url2</div></pre></td></tr></table></figure>
+<p>在本地创建文件夹使用</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">filename = &apos;image\\&#123;&#125;\\&apos;.format(fileName) + str(i) + &apos;.jpg&apos;</div></pre></td></tr></table></figure>
+<p>表示文件保存在与这个爬虫代码同级目录image下，然后获取的图片保存在image中按照之前获取的栏目名称的文件夹中。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line">def download(main_url, fileName):</div><div class="line">    print(&apos;-------准备下载中-------&apos;)</div><div class="line">    try:</div><div class="line">        doc = parser(main_url, &apos;# waterfall&apos;)</div><div class="line">        if not os.path.exists(&apos;image\\&apos; + fileName):</div><div class="line">            print(&apos;创建文件夹...&apos;)</div><div class="line">            os.makedirs(&apos;image\\&apos; + fileName)</div><div class="line">        link = doc.xpath(&apos;//*[@id=&quot;waterfall&quot;]/div/a/@href&apos;)</div><div class="line">        #  print(link)</div><div class="line">        i = 0</div><div class="line">        for item in link:</div><div class="line">            i += 1</div><div class="line">            minor_url = &apos;http://huaban.com&apos; + item</div><div class="line">            doc = parser(minor_url, &apos;# pin_view_page&apos;)</div><div class="line">            img_url = doc.xpath(&apos;//*[@id=&quot;baidu_image_holder&quot;]/a/img/@src&apos;)</div><div class="line">            img_url2 = doc.xpath(&apos;//*[@id=&quot;baidu_image_holder&quot;]/img/@src&apos;)</div><div class="line">            img_url +=img_url2</div><div class="line">            try:</div><div class="line">                url = &apos;http:&apos; + str(img_url[0])</div><div class="line">                print(&apos;正在下载第&apos; + str(i) + &apos;张图片，地址：&apos; + url)</div><div class="line">                r = requests.get(url)</div><div class="line">                filename = &apos;image\\&#123;&#125;\\&apos;.format(fileName) + str(i) + &apos;.jpg&apos;</div><div class="line">                with open(filename, &apos;wb&apos;) as fo:</div><div class="line">                    fo.write(r.content)</div><div class="line">            except Exception:</div><div class="line">                print(&apos;出错了！&apos;)</div><div class="line">    except Exception:</div><div class="line">        print(&apos;出错啦!&apos;)</div><div class="line"></div><div class="line"></div><div class="line">if __name__ == &apos;__main__&apos;:</div><div class="line">    get_main_url()</div></pre></td></tr></table></figure>
 <h1 id="五：总结"><a href="#五：总结" class="headerlink" title="五：总结"></a>五：总结</h1><p>这次爬虫继续练习了Selenium和xpath的使用，在网页分析的时候也遇到很多问题，只有不断练习才能把自己不会部分减少，当然这次爬取了500多张妹纸还是挺养眼的。<br>贴出我的github地址，我的爬虫代码和学习的基础部分都放进去了，有喜欢的朋友一起学习交流吧！<strong><em><a href="https://github.com/rieuse/learnPython" target="_blank" rel="external">github.com/rieuse/learnPython</a></em></strong></p>
 <p><img src="http://upload-images.jianshu.io/upload_images/4701426-a2c3ad6cc56eed72.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Paste_Image.png"></p>
 
@@ -361,7 +344,7 @@ except Exception:
         <p><span>本文标题:</span><a href="/2017/05/21/爬虫7/">Python爬虫日记7：批量抓取花瓣网高清美图并保存</a></p>
         <p><span>文章作者:</span><a href="/" title="回到主页">布咯咯_rieuse</a></p>
         <p><span>发布时间:</span>2017-05-21, 20:21:35</p>
-        <p><span>最后更新:</span>2017-05-23, 13:07:49</p>
+        <p><span>最后更新:</span>2017-05-23, 18:57:07</p>
         <p>
             <span>原始链接:</span><a class="post-url" href="/2017/05/21/爬虫7/" title="Python爬虫日记7：批量抓取花瓣网高清美图并保存">http://bulolo.cn/2017/05/21/爬虫7/</a>
             <span class="copy-path" data-clipboard-text="原文: http://bulolo.cn/2017/05/21/爬虫7/　　作者: 布咯咯_rieuse" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
@@ -391,7 +374,7 @@ except Exception:
     <div id="toc" class="toc-article">
         <strong class="toc-title">文章目录</strong>
         
-            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#一：前言"><span class="toc-number">1.</span> <span class="toc-text">一：前言</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#二：运行环境"><span class="toc-number">2.</span> <span class="toc-text">二：运行环境</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#三：实例分析"><span class="toc-number">3.</span> <span class="toc-text">三：实例分析</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#四：实战代码"><span class="toc-number">4.</span> <span class="toc-text">四：实战代码</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#五：总结"><span class="toc-number">5.</span> <span class="toc-text">五：总结</span></a></li></ol>
+            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#一：前言"><span class="toc-text">一：前言</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#二：运行环境"><span class="toc-text">二：运行环境</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#三：实例分析"><span class="toc-text">三：实例分析</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#四：实战代码"><span class="toc-text">四：实战代码</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#五：总结"><span class="toc-text">五：总结</span></a></li></ol>
         
     </div>
     <style>

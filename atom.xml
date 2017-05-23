@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://bulolo.cn/"/>
-  <updated>2017-05-23T05:07:49.870Z</updated>
+  <updated>2017-05-23T10:57:07.082Z</updated>
   <id>http://bulolo.cn/</id>
   
   <author>
@@ -20,7 +20,7 @@
     <link href="http://bulolo.cn/2017/05/21/%E7%88%AC%E8%99%AB7/"/>
     <id>http://bulolo.cn/2017/05/21/爬虫7/</id>
     <published>2017-05-21T12:21:35.000Z</published>
-    <updated>2017-05-23T05:07:49.870Z</updated>
+    <updated>2017-05-23T10:57:07.082Z</updated>
     
     <content type="html"><![CDATA[<h1 id="一：前言"><a href="#一：前言" class="headerlink" title="一：前言"></a>一：前言</h1><p>嘀嘀嘀，上车请刷卡。昨天看到了不错的图片分享网——<a href="http://huaban.com/boards/favorite/beauty/" target="_blank" rel="external">花瓣</a>，里面的图片质量还不错，所以利用selenium+xpath我把它的妹子的栏目下爬取了下来，以图片栏目名称给文件夹命名分类保存到电脑中。这个妹子主页<a href="http://huaban.com/boards/favorite/beauty" target="_blank" rel="external">http://huaban.com/boards/favorite/beauty</a> 是动态加载的，如果想获取更多内容可以模拟下拉，这样就可以更多的图片资源。这种之前爬虫中也做过，但是因为网速不够快所以我就抓了19个栏目，一共500多张美图，也已经很满意了。</p>
 <p><strong>先看看效果：</strong></p>
@@ -45,29 +45,12 @@
 <p>4.下面的代码就是解析本次主页面<a href="http://huaban.com/boards/favorite/beauty/" target="_blank" rel="external">http://huaban.com/boards/favorite/beauty/</a> 然后获取到每个栏目的网址和栏目的名称，使用xpath来获取栏目的网页时，进入网页开发者模式后，如图所示进行操作。之后需要用栏目名称在电脑中建立文件夹，所以在这个网页中要获取到栏目的名称，这里遇到一个问题，一些名称不符合文件命名规则要剔除，我这里就是一个 * 影响了。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">def get_main_url():</div><div class="line">    print(&apos;打开主页搜寻链接中...&apos;)</div><div class="line">    try:</div><div class="line">        doc = parser(&apos;http://huaban.com/boards/favorite/beauty/&apos;, &apos;# waterfall&apos;)</div><div class="line">        name = doc.xpath(&apos;//*[@id=&quot;waterfall&quot;]/div/a[1]/div[2]/h3/text()&apos;)</div><div class="line">        u = doc.xpath(&apos;//*[@id=&quot;waterfall&quot;]/div/a[1]/@href&apos;)</div><div class="line">        for item, fileName in zip(u, name):</div><div class="line">            main_url = &apos;http://huaban.com&apos; + item</div><div class="line">            print(&apos;主链接已找到&apos; + main_url)</div><div class="line">            if &apos;*&apos; in fileName:</div><div class="line">                fileName = fileName.replace(&apos;*&apos;, &apos;&apos;)</div><div class="line">            download(main_url, fileName)</div><div class="line">    except Exception as e:</div><div class="line">        print(e)</div></pre></td></tr></table></figure></p>
 <p><img src="http://upload-images.jianshu.io/upload_images/4701426-15c45e7520131b7f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Paste_Image.png"></p>
 <p>5.前面已经获取到栏目的网页和栏目的名称，这里就需要对栏目的网页分析，进入栏目网页后，只是一些缩略图，我们不想要这些低分辨率的图片，所以要再进入每个缩略图中，解析网页获取到真正的高清图片网址。这里也有一个地方比较坑人，就是一个栏目中，不同的图片存放dom格式不一样，所以我这样做<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">img_url = doc.xpath(&apos;//*[@id=&quot;baidu_image_holder&quot;]/a/img/@src&apos;)</div><div class="line">img_url2 = doc.xpath(&apos;//*[@id=&quot;baidu_image_holder&quot;]/img/@src&apos;)</div></pre></td></tr></table></figure></p>
-<p>这就把两种dom格式中的图片地址都获取了，然后把两个地址list合并一下。<figure class="highlight plain"><figcaption><span>+=img_url2```</span></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">在本地创建文件夹使用```filename = &apos;image\\&#123;&#125;\\&apos;.format(fileName) + str(i) + &apos;.jpg&apos;```表示文件保存在与这个爬虫代码同级目录image下，然后获取的图片保存在image中按照之前获取的栏目名称的文件夹中。</div></pre></td></tr></table></figure></p>
-<p>def download(main_url, fileName):<br>    print(‘——-准备下载中——-‘)<br>    try:<br>        doc = parser(main_url, ‘# waterfall’)<br>        if not os.path.exists(‘image\‘ + fileName):<br>            print(‘创建文件夹…’)<br>            os.makedirs(‘image\‘ + fileName)<br>        link = doc.xpath(‘//*[@id=”waterfall”]/div/a/@href’)</p>
-<pre><code>    #  print(link)
-    i = 0
-    for item in link:
-        i += 1
-        minor_url = &apos;http://huaban.com&apos; + item
-        doc = parser(minor_url, &apos;# pin_view_page&apos;)
-        img_url = doc.xpath(&apos;//*[@id=&quot;baidu_image_holder&quot;]/a/img/@src&apos;)
-        img_url2 = doc.xpath(&apos;//*[@id=&quot;baidu_image_holder&quot;]/img/@src&apos;)
-        img_url +=img_url2
-        try:
-            url = &apos;http:&apos; + str(img_url[0])
-            print(&apos;正在下载第&apos; + str(i) + &apos;张图片，地址：&apos; + url)
-            r = requests.get(url)
-            filename = &apos;image\\{}\\&apos;.format(fileName) + str(i) + &apos;.jpg&apos;
-            with open(filename, &apos;wb&apos;) as fo:
-                fo.write(r.content)
-        except Exception:
-            print(&apos;出错了！&apos;)
-except Exception:
-    print(&apos;出错啦!&apos;)
-</code></pre><p>if <strong>name</strong> == ‘<strong>main</strong>‘:<br>    get_main_url()<br>```</p>
+<p>这就把两种dom格式中的图片地址都获取了，然后把两个地址list合并一下。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">img_url +=img_url2</div></pre></td></tr></table></figure>
+<p>在本地创建文件夹使用</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">filename = &apos;image\\&#123;&#125;\\&apos;.format(fileName) + str(i) + &apos;.jpg&apos;</div></pre></td></tr></table></figure>
+<p>表示文件保存在与这个爬虫代码同级目录image下，然后获取的图片保存在image中按照之前获取的栏目名称的文件夹中。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line">def download(main_url, fileName):</div><div class="line">    print(&apos;-------准备下载中-------&apos;)</div><div class="line">    try:</div><div class="line">        doc = parser(main_url, &apos;# waterfall&apos;)</div><div class="line">        if not os.path.exists(&apos;image\\&apos; + fileName):</div><div class="line">            print(&apos;创建文件夹...&apos;)</div><div class="line">            os.makedirs(&apos;image\\&apos; + fileName)</div><div class="line">        link = doc.xpath(&apos;//*[@id=&quot;waterfall&quot;]/div/a/@href&apos;)</div><div class="line">        #  print(link)</div><div class="line">        i = 0</div><div class="line">        for item in link:</div><div class="line">            i += 1</div><div class="line">            minor_url = &apos;http://huaban.com&apos; + item</div><div class="line">            doc = parser(minor_url, &apos;# pin_view_page&apos;)</div><div class="line">            img_url = doc.xpath(&apos;//*[@id=&quot;baidu_image_holder&quot;]/a/img/@src&apos;)</div><div class="line">            img_url2 = doc.xpath(&apos;//*[@id=&quot;baidu_image_holder&quot;]/img/@src&apos;)</div><div class="line">            img_url +=img_url2</div><div class="line">            try:</div><div class="line">                url = &apos;http:&apos; + str(img_url[0])</div><div class="line">                print(&apos;正在下载第&apos; + str(i) + &apos;张图片，地址：&apos; + url)</div><div class="line">                r = requests.get(url)</div><div class="line">                filename = &apos;image\\&#123;&#125;\\&apos;.format(fileName) + str(i) + &apos;.jpg&apos;</div><div class="line">                with open(filename, &apos;wb&apos;) as fo:</div><div class="line">                    fo.write(r.content)</div><div class="line">            except Exception:</div><div class="line">                print(&apos;出错了！&apos;)</div><div class="line">    except Exception:</div><div class="line">        print(&apos;出错啦!&apos;)</div><div class="line"></div><div class="line"></div><div class="line">if __name__ == &apos;__main__&apos;:</div><div class="line">    get_main_url()</div></pre></td></tr></table></figure>
 <h1 id="五：总结"><a href="#五：总结" class="headerlink" title="五：总结"></a>五：总结</h1><p>这次爬虫继续练习了Selenium和xpath的使用，在网页分析的时候也遇到很多问题，只有不断练习才能把自己不会部分减少，当然这次爬取了500多张妹纸还是挺养眼的。<br>贴出我的github地址，我的爬虫代码和学习的基础部分都放进去了，有喜欢的朋友一起学习交流吧！<strong><em><a href="https://github.com/rieuse/learnPython" target="_blank" rel="external">github.com/rieuse/learnPython</a></em></strong></p>
 <p><img src="http://upload-images.jianshu.io/upload_images/4701426-a2c3ad6cc56eed72.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Paste_Image.png"></p>
 ]]></content>
@@ -171,7 +154,7 @@ except Exception:
     <link href="http://bulolo.cn/2017/05/05/%E7%88%AC%E8%99%AB5/"/>
     <id>http://bulolo.cn/2017/05/05/爬虫5/</id>
     <published>2017-05-05T13:21:22.000Z</published>
-    <updated>2017-05-23T05:07:38.514Z</updated>
+    <updated>2017-05-23T10:48:35.605Z</updated>
     
     <content type="html"><![CDATA[<h1 id="一：前言"><a href="#一：前言" class="headerlink" title="一：前言"></a>一：前言</h1><p>这几天哈尔滨天气天天刮风下雨的挺烦的，抱个电脑去学校图书馆学编程回来还要被雨淋，马上专业课也要考试了，Python集中学习要等到几门课考完了。<br>今天使用Selenium来处理JS一点资讯文章动态加载问题，本来是想配合PhantomJS无界面浏览器来实现的，但是一直出问题等有空在找找原因吧，所以我就Firefox()了。</p>
 <blockquote>
@@ -188,7 +171,10 @@ except Exception:
 <h1 id="四：实战代码"><a href="#四：实战代码" class="headerlink" title="四：实战代码"></a>四：实战代码</h1><p>1.首先把全部的模块导入一下，这次用到了好几个。selenium.webdriver用来模拟浏览器用到的；BeautifulSoup用来解析网页结构；csv模块用来把数据保存为csv格式；time用来延时的，不然网页没有加载完就解析数据，那么保存的数据不完整，不够多。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">from selenium.webdriver.common.keys import Keys</div><div class="line">from selenium import webdriver</div><div class="line">from bs4 import BeautifulSoup</div><div class="line">import csv,time</div></pre></td></tr></table></figure></p>
 <p>2.首先webdriver.Firefox()模拟一个火狐浏览器，之后请求这个一点资讯地址延时2秒，保证加载完成。这里本打算用PhantomJS无界面浏览器来爬取的，但是结果不够好，暂时就用火狐吧。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">driver = webdriver.Firefox()</div><div class="line">first_url = &apos;http://www.yidianzixun.com/channel/c6&apos;</div><div class="line">driver.get(first_url)</div><div class="line">time.sleep(2)</div></pre></td></tr></table></figure></p>
 <p>3.接下来模拟鼠标点击那个刷新按钮可以加载更多数据，次数可以自己在加，我这里就用一次，icon-refresh是在开发者模式中按照我图中步骤找到那个按钮的相应位置，使用快捷键Ctrl+Shift+c，然后点击那个刷新按钮就可以跳转到相应代码位置。</p>
-<p><img src="http://upload-images.jianshu.io/upload_images/4701426-ea432b133fa4bd58.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Paste_Image.png"><br>4.<figure class="highlight plain"><figcaption><span>selenium.webdriver.common.keys import Keys```这个是模拟键盘的操作的模块，```driver.find_element_by_class_name('icon-refresh').send_keys(Keys.DOWN)```用来模拟键盘的** ↓ **方向键，这样就可以使侧边的滚动条往下滚动，从而实现动态加载文章数据。然后也需要延迟一下让网页加载完全。这里的for语句执行多次是为了按下↓键更多。</span></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">```</div><div class="line">driver.find_element_by_class_name(&apos;icon-refresh&apos;).click()</div><div class="line">for i in range(1,90):</div><div class="line">    driver.find_element_by_class_name(&apos;icon-refresh&apos;).send_keys(Keys.DOWN)</div><div class="line">time.sleep(3)</div></pre></td></tr></table></figure></p>
+<p><img src="http://upload-images.jianshu.io/upload_images/4701426-ea432b133fa4bd58.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Paste_Image.png"><br>4.<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">find_element_by_class_name().click()</div></pre></td></tr></table></figure></p>
+<p>来模拟点击按钮，之前导入的模块<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">from selenium.webdriver.common.keys import Keys</div></pre></td></tr></table></figure></p>
+<p>这个是模拟键盘的操作的模块<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">driver.find_element_by_class_name(&apos;icon-refresh&apos;).send_keys(Keys.DOWN)</div></pre></td></tr></table></figure></p>
+<p>用来模拟键盘的<strong> ↓ </strong>方向键，这样就可以使侧边的滚动条往下滚动，从而实现动态加载文章数据。然后也需要延迟一下让网页加载完全。这里的for语句执行多次是为了按下↓键更多。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">driver.find_element_by_class_name(&apos;icon-refresh&apos;).click()</div><div class="line">for i in range(1,90):</div><div class="line">    driver.find_element_by_class_name(&apos;icon-refresh&apos;).send_keys(Keys.DOWN)</div><div class="line">time.sleep(3)</div></pre></td></tr></table></figure></p>
 <p>5.到现在网页已经加载完全了，我们想要的文章数据也加载很多了，那么就开始解析网页来爬取数据吧！通过上面实例分析的第二步可以知道文章标题，作者，评论数目，文章链接等信息位置，最后解析完就把这个模拟的浏览器关闭。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">soup = BeautifulSoup(driver.page_source, &apos;lxml&apos;)</div><div class="line">articles = []</div><div class="line">for article in soup.find_all(class_=&apos;item doc style-small-image style-content-middle&apos;):</div><div class="line">    title = article.find(class_=&apos;doc-title&apos;).get_text()</div><div class="line">    source = article.find(class_=&apos;source&apos;).get_text()</div><div class="line">    comment = article.find(class_=&apos;comment-count&apos;).get_text()</div><div class="line">    link = &apos;http://www.yidianzixun.com&apos; + article.get(&apos;href&apos;)</div><div class="line">    articles.append([title, source, comment, link])</div><div class="line">driver.quit()</div></pre></td></tr></table></figure></p>
 <p>6.数据也获取了那么我们现在使用csv格式来保存这些数据就行了。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">with open(&apos;yidian.csv&apos;, &apos;w&apos;) as f:</div><div class="line">    writer = csv.writer(f)</div><div class="line">    writer.writerow([&apos;文章标题&apos;, &apos;作者&apos;, &apos;评论数&apos;, &apos;文章地址&apos;])</div><div class="line">    for row in articles:</div><div class="line">        writer.writerow(row)</div></pre></td></tr></table></figure></p>
 <h1 id="五：总结"><a href="#五：总结" class="headerlink" title="五：总结"></a>五：总结</h1><p>这次爬虫练习了selenium模拟浏览器的各种操作，继续加油！<br>贴出我的github地址，我的爬虫代码和学习的基础部分都放进去了，有喜欢的朋友一起学习交流吧！<strong><em><a href="https://github.com/rieuse/learnPython" target="_blank" rel="external">github.com/rieuse/learnPython</a></em></strong></p>
@@ -336,7 +322,7 @@ href = doc.xpath(&apos;//div[@class=&quot;newsList&quot;]/ul/li/a/@href&apos;)
     <link href="http://bulolo.cn/2017/04/27/%E7%88%AC%E8%99%AB1/"/>
     <id>http://bulolo.cn/2017/04/27/爬虫1/</id>
     <published>2017-04-27T08:34:19.000Z</published>
-    <updated>2017-05-23T04:58:35.213Z</updated>
+    <updated>2017-05-23T10:52:50.437Z</updated>
     
     <content type="html"><![CDATA[<h1 id="一、前言"><a href="#一、前言" class="headerlink" title="一、前言"></a>一、前言</h1><p>这是我第一次写文章，作为一个非计算机，编程类专业的大二学生，我希望能够给像我这样的入门的朋友一些帮助，也同时激励自己努力写代码。好了废话不多说，今天我做的爬虫是豆瓣的一个电影——速度与激情8的全部影人页面，贴出网址：<a href="https://movie.douban.com/subject/26260853/celebrities" target="_blank" rel="external">速度与激情8 全部影人</a>。<br><strong>目标</strong>：爬取速度与激情8中全部影人的图片并且用图中人物的名字给图片文件命名，最后保存在电脑中。<br><a id="more"></a><br><img src="http://upload-images.jianshu.io/upload_images/4701426-e240ffe03f1ae5d5.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="豆瓣1.png"></p>
 <h1 id="二、运行环境"><a href="#二、运行环境" class="headerlink" title="二、运行环境"></a>二、运行环境</h1><ul>
@@ -345,43 +331,17 @@ href = doc.xpath(&apos;//div[@class=&quot;newsList&quot;]/ul/li/a/@href&apos;)
 <li>IDE<br>PyCharm 学生可以通过edu邮箱免费使用，不是学生的朋友可以试试社区版，不明白怎么安装的可以留言或者 私信我。</li>
 </ul>
 <h1 id="三、分析"><a href="#三、分析" class="headerlink" title="三、分析"></a>三、分析</h1><p>爬虫的三个要点：请求，解析，存储<br><strong>请求</strong>可以使用urllib Requests ，其中urllib是自带的，  Requests是第三方库，功能更强大，本次使用的是urllib。<br><strong>解析</strong>我用的有正则表达式，xpath，本次使用的是正则表达式，主要是想自己用正则来练练 只看正则的说明不能理解其中的奥秘ヾ(o◕∀◕)ﾉヾ，必须多试试。<br><strong>储存</strong>常用的有保存到内存，数据库，硬盘中，本次是保存到电脑硬盘中</p>
-<h1 id="四、实战"><a href="#四、实战" class="headerlink" title="四、实战"></a>四、实战</h1><p>首先导入我们需要的模块<br><code>import urllib.request
- import os
- import re</code><br>urllib.request是用来请求的，os是操作文件目录常用的模块，re是python中正则表达式的模块，<br><code>url = &#39;https://movie.douban.com/subject/26260853/celebrities&#39;
- r = urllib.request.urlopen(url)
- html = r.read().decode(&#39;utf-8&#39;)</code><br>第一行很明显是本次爬虫的网页， r = urllib.request.urlopen(url)用来打开网页， r.read()是读取网页内容，decode(‘utf-8’)是用utf-8编码对字符串str进行解码，以获取unicode。</p>
+<h1 id="四、实战"><a href="#四、实战" class="headerlink" title="四、实战"></a>四、实战</h1><p>首先导入我们需要的模块<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">import urllib.request</div><div class="line">import os</div><div class="line">import re</div></pre></td></tr></table></figure></p>
+<p>urllib.request是用来请求的，os是操作文件目录常用的模块，re是python中正则表达式的模块，<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">url = &apos;https://movie.douban.com/subject/26260853/celebrities&apos;</div><div class="line">r = urllib.request.urlopen(url)</div><div class="line">html = r.read().decode(&apos;utf-8&apos;)</div></pre></td></tr></table></figure></p>
+<p>第一行很明显是本次爬虫的网页， r = urllib.request.urlopen(url)用来打开网页， r.read()是读取网页内容，decode(‘utf-8’)是用utf-8编码对字符串str进行解码，以获取unicode。</p>
 <p>之后我们来获取一下图片的地址，用Chrome浏览器打开速度与激情8的全部影人页面，按下F12，分析一下，可知每个人的照片地址都是img1或者3.doubanio.com/img/celebrity/medium/几个数字.jpg</p>
-<p><img src="http://upload-images.jianshu.io/upload_images/4701426-a5412a6886373783.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Paste_Image.png"><br>我们使用正则表达式来匹配一下这些图片地址，1或者3部分用\d匹配，末尾数字部分用.*来匹配即可。<br><code>result = re.findall(r&#39;https://img\d.doubanio.com/img/celebrity/medium/.*.jpg&#39;,html)</code><br>现在图片地址也有了，还需要把这些人物的名字给爬下来,之后才能配对文件，再次分析一下刚才的网址。看到这些人物的名字都是以title=开头，我们就用它来正则匹配一下，来获取全部的人物名字，放进一个列表中。<br><img src="http://upload-images.jianshu.io/upload_images/4701426-409edabe4ba6433c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Paste_Image.png"><br><code>result2 = re.findall(r&#39;(?&lt;=title=&quot;).\S+&#39;, html)
- result2.pop()
- result3 = sorted(set(result2), key=result2.index)
- result3.pop(-3)</code><br>第一行代码中re.findall(r’(?&lt;=title=”).\S+’, html)用来匹配截图中title=”后面的名字<br>第二行代码中pop()是去除最后一个元素，因为前面匹配后的列表中有一个非人物名字的元素所以我们就需要把它去掉<br>第三行代码中sorted(set(result2), key=result2.index)有两个功能，一个是使用set()集合函数来去除列表中重复元素，另一个是sorted(）函数是给列表排序用的，key=result2.index的意思是以result2原来的索引顺序来给新的列表排序，因为每张图片很名字是对应的，如果单单使用set()，虽然重复的去除了但是顺序也变了，所以我们需要利用sort()结合key=result2.index来排序才行。<br>result3.pop(-3)意思是删除result3中倒数第三个元素，因为克里斯·摩根这个没照片所以我就把他删了。</p>
-<p>之后我们来给本地创建一个文件夹用来保存图片，这里就用到了os模块<br><code>if not os.path.exists(&#39;douban&#39;):
-    os.makedirs(&#39;douban&#39;)</code></p>
-<p>之后需要的是下载这些人物图片，利用之前爬取的人物名字给对应图片命名并保存。<br> <code>i = 0
-for link in result:
-    filename = &#39;douban\&#39; + str(result3[i])+ &#39;.jpg&#39;
-    i += 1
-    with open(filename, &#39;w&#39;) as file:
-        urllib.request.urlretrieve(link, filename)</code></p>
-<p>完整代码贴出来，需要的同学可以试试。<br><code>import urllib.request
-import os
-import re
-url = &#39;https://movie.douban.com/subject/26260853/celebrities&#39;
-r = urllib.request.urlopen(url)
-html = r.read().decode(&#39;utf-8&#39;)
-result = re.findall(r&#39;https://img\d.doubanio.com/img/celebrity/medium/.*.jpg&#39;, html)
-result2 = re.findall(r&#39;(?&lt;=title=&quot;).\S+&#39;, html)
-result2.pop()
-result3 = sorted(set(result2), key=result2.index)
-result3.pop(-3)
-if not os.path.exists(&#39;douban&#39;):
-    os.makedirs(&#39;douban&#39;)
-i = 0
-for link in result:
-    filename = &#39;douban\\&#39; + str(result3[i]) + &#39;.jpg&#39;
-    i += 1
-    with open(filename, &#39;w&#39;) as file:
-        urllib.request.urlretrieve(link, filename)</code></p>
+<p><img src="http://upload-images.jianshu.io/upload_images/4701426-a5412a6886373783.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Paste_Image.png"><br>我们使用正则表达式来匹配一下这些图片地址，1或者3部分用\d匹配，末尾数字部分用.*来匹配即可。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">result = re.findall(r&apos;https://img\d.doubanio.com/img/celebrity/medium/.*.jpg&apos;,html)</div></pre></td></tr></table></figure></p>
+<p>现在图片地址也有了，还需要把这些人物的名字给爬下来,之后才能配对文件，再次分析一下刚才的网址。看到这些人物的名字都是以title=开头，我们就用它来正则匹配一下，来获取全部的人物名字，放进一个列表中。<br><img src="http://upload-images.jianshu.io/upload_images/4701426-409edabe4ba6433c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Paste_Image.png"><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">result2 = re.findall(r&apos;(?&lt;=title=&quot;).\S+&apos;, html)</div><div class="line">result2.pop()</div><div class="line">result3 = sorted(set(result2), key=result2.index)</div><div class="line">result3.pop(-3)</div></pre></td></tr></table></figure></p>
+<p>第一行代码中re.findall(r’(?&lt;=title=”).\S+’, html)用来匹配截图中title=”后面的名字<br>第二行代码中pop()是去除最后一个元素，因为前面匹配后的列表中有一个非人物名字的元素所以我们就需要把它去掉<br>第三行代码中sorted(set(result2), key=result2.index)有两个功能，一个是使用set()集合函数来去除列表中重复元素，另一个是sorted(）函数是给列表排序用的，key=result2.index的意思是以result2原来的索引顺序来给新的列表排序，因为每张图片很名字是对应的，如果单单使用set()，虽然重复的去除了但是顺序也变了，所以我们需要利用sort()结合key=result2.index来排序才行。<br>result3.pop(-3)意思是删除result3中倒数第三个元素，因为克里斯·摩根这个没照片所以我就把他删了。</p>
+<p>之后我们来给本地创建一个文件夹用来保存图片，这里就用到了os模块<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">if not os.path.exists(&apos;douban&apos;):</div><div class="line">    os.makedirs(&apos;douban&apos;)</div></pre></td></tr></table></figure></p>
+<p>之后需要的是下载这些人物图片，利用之前爬取的人物名字给对应图片命名并保存。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">i = 0</div><div class="line">for link in result:</div><div class="line">    filename = &apos;douban\&apos; + str(result3[i])+ &apos;.jpg&apos;</div><div class="line">    i += 1</div><div class="line">    with open(filename, &apos;w&apos;) as file:</div><div class="line">        urllib.request.urlretrieve(link, filename)</div></pre></td></tr></table></figure>
+<p>完整代码贴出来，需要的同学可以试试。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">import urllib.request</div><div class="line">import os</div><div class="line">import re</div><div class="line">url = &apos;https://movie.douban.com/subject/26260853/celebrities&apos;</div><div class="line">r = urllib.request.urlopen(url)</div><div class="line">html = r.read().decode(&apos;utf-8&apos;)</div><div class="line">result = re.findall(r&apos;https://img\d.doubanio.com/img/celebrity/medium/.*.jpg&apos;, html)</div><div class="line">result2 = re.findall(r&apos;(?&lt;=title=&quot;).\S+&apos;, html)</div><div class="line">result2.pop()</div><div class="line">result3 = sorted(set(result2), key=result2.index)</div><div class="line">result3.pop(-3)</div><div class="line">if not os.path.exists(&apos;douban&apos;):</div><div class="line">    os.makedirs(&apos;douban&apos;)</div><div class="line">i = 0</div><div class="line">for link in result:</div><div class="line">    filename = &apos;douban\\&apos; + str(result3[i]) + &apos;.jpg&apos;</div><div class="line">    i += 1</div><div class="line">    with open(filename, &apos;w&apos;) as file:</div><div class="line">        urllib.request.urlretrieve(link, filename)</div></pre></td></tr></table></figure></p>
 <h1 id="五、总结"><a href="#五、总结" class="headerlink" title="五、总结"></a>五、总结</h1><p>最后效果，图片都下载在我刚才指定的文件夹中了。<br><img src="http://upload-images.jianshu.io/upload_images/4701426-5c08e5da83f42dab.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Paste_Image.png"><br>第一次写文章，对很多东西不是很熟悉，如果有任何问题，请多多指教。</p>
 ]]></content>
     
