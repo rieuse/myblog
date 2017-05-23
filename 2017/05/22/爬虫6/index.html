@@ -15,16 +15,20 @@
 
 
 
-<meta name="description" content="布咯咯的python世界">
+<meta name="description" content="一：前言 上周末非常开心，第一次去北京然后参见了zealer和夸克浏览器的联合线下沙龙会议，和大家交流很多收获很多，最让我吃惊的是他们团队非常年轻就有各种能力，每个人都很强。一个结论：我要继续努力！贴上我们的合影，我很帅！：）">
 <meta property="og:type" content="article">
-<meta property="og:title" content="爬虫6">
+<meta property="og:title" content="Python爬虫日记六：Selenium+xpath+bs4爬取亚马逊数据保存到mongodb">
 <meta property="og:url" content="http://bulolo.cn/2017/05/22/爬虫6/index.html">
 <meta property="og:site_name" content="布咯咯_rieuse的博客">
-<meta property="og:description" content="布咯咯的python世界">
-<meta property="og:updated_time" content="2017-05-22T15:21:29.886Z">
+<meta property="og:description" content="一：前言 上周末非常开心，第一次去北京然后参见了zealer和夸克浏览器的联合线下沙龙会议，和大家交流很多收获很多，最让我吃惊的是他们团队非常年轻就有各种能力，每个人都很强。一个结论：我要继续努力！贴上我们的合影，我很帅！：）">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/4701426-86fe7ad392d957de.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/4701426-e7a4abb83027103a.JPG?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/4701426-cc1ce81fb481de52.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:updated_time" content="2017-05-23T04:41:18.606Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="爬虫6">
-<meta name="twitter:description" content="布咯咯的python世界">
+<meta name="twitter:title" content="Python爬虫日记六：Selenium+xpath+bs4爬取亚马逊数据保存到mongodb">
+<meta name="twitter:description" content="一：前言 上周末非常开心，第一次去北京然后参见了zealer和夸克浏览器的联合线下沙龙会议，和大家交流很多收获很多，最让我吃惊的是他们团队非常年轻就有各种能力，每个人都很强。一个结论：我要继续努力！贴上我们的合影，我很帅！：）">
+<meta name="twitter:image" content="http://upload-images.jianshu.io/upload_images/4701426-86fe7ad392d957de.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
 
 <link rel="apple-touch-icon" href= "/apple-touch-icon.png">
 
@@ -54,7 +58,7 @@
 <link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
 
 
-<title>爬虫6 | 布咯咯_rieuse的博客</title>
+<title>Python爬虫日记六：Selenium+xpath+bs4爬取亚马逊数据保存到mongodb | 布咯咯_rieuse的博客</title>
 
 <script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
 <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
@@ -277,7 +281,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      爬虫6
+      Python爬虫日记六：Selenium+xpath+bs4爬取亚马逊数据保存到mongodb
     </h1>
   
 
@@ -294,7 +298,40 @@
     <div class="article-entry" itemprop="articleBody">
       
           
-        
+        <h1 id="一：前言"><a href="#一：前言" class="headerlink" title="一：前言"></a>一：前言</h1><blockquote>
+<p>上周末非常开心，第一次去北京然后参见了zealer和夸克浏览器的联合线下沙龙会议，和大家交流很多收获很多，最让我吃惊的是他们团队非常年轻就有各种能力，每个人都很强。一个结论：我要继续努力！<br>贴上我们的合影，我很帅！：）</p>
+</blockquote>
+<p><img src="http://upload-images.jianshu.io/upload_images/4701426-86fe7ad392d957de.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="zealer&amp;夸克浏览器.jpg"></p>
+<a id="more"></a>
+<p><img src="http://upload-images.jianshu.io/upload_images/4701426-e7a4abb83027103a.JPG?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="夸克浏览器合影.JPG"></p>
+<blockquote>
+<p>这次爬虫是使用selenium来模拟输入关键字（我是测试输入各种图书）然后把全部页数的相关的商品数据保存到mongodb，期间遇到各种问题，很多网站不是很容易就一次可以把网页解析好，很轻松的提取数据。这个亚马逊就是有点怪，这次是提取商品的名称，图片地址，价格，时间，因为我的初始目的是出入有关图书的关键字，所以时间就是图书出版时间。</p>
+</blockquote>
+<p>关于‘python’关键字如图所示，爬取了300条数据。<br><img src="http://upload-images.jianshu.io/upload_images/4701426-cc1ce81fb481de52.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="mongodb数据.png"></p>
+<h1 id="二：运行环境"><a href="#二：运行环境" class="headerlink" title="二：运行环境"></a>二：运行环境</h1><ul>
+<li>IDE：Pycharm</li>
+<li>Python3.6</li>
+<li>Selenium 3.4.0</li>
+<li>pymongo 3.3.0</li>
+<li>BeautifulSoup 4.5.3</li>
+</ul>
+<h1 id="三：-爬虫中重要（keng）的部分"><a href="#三：-爬虫中重要（keng）的部分" class="headerlink" title="三： 爬虫中重要（keng）的部分"></a>三： 爬虫中重要（keng）的部分</h1><ul>
+<li>商品的时间使用Beautifulsoup是提取不出来的，使用正则表达式也搞不定，我最后用xpath才提取出来</li>
+<li>每个商品框架都是独立id，没有使用共同的class，所以要想获取他们使用正则表达式挺合适的</li>
+<li>因为商品的名称，图片地址，价格这三个是使用beautifulsoup提取的，而时间是用的xpath提取，要想把他们一起装入一个字典中然后写入mongodb就需要用到zip这个函数了。<br>像这样的处理两个列表一起迭代<figure class="highlight plain"><figcaption><span>item, time in zip(content, date)```</span></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"># 四：实战代码</div></pre></td></tr></table></figure></li>
+</ul>
+<p>from selenium.common.exceptions import TimeoutException<br>from selenium.webdriver.common.by import By<br>from selenium.webdriver.support import expected_conditions as EC<br>from selenium.webdriver.support.ui import WebDriverWait<br>from selenium import webdriver<br>from bs4 import BeautifulSoup<br>import lxml.html<br>import pymongo<br>import re</p>
+<p>MONGO_URL = ‘localhost’<br>MONGO_DB = ‘amazon’<br>MONGO_TABLE = ‘amazon-python’<br>SERVICE_ARGS = [‘–load-images=false’, ‘–disk-cache=true’]<br>KEYWORD = ‘python’<br>client = pymongo.MongoClient(MONGO_URL)<br>db = client[MONGO_DB]</p>
+<p>browser = webdriver.PhantomJS(service_args=SERVICE_ARGS)</p>
+<h1 id="browser-webdriver-Firefox"><a href="#browser-webdriver-Firefox" class="headerlink" title="browser = webdriver.Firefox()"></a>browser = webdriver.Firefox()</h1><p>wait = WebDriverWait(browser, 10)<br>browser.set_window_size(1400, 900)</p>
+<p>def search():<br>    print(‘正在搜索’)<br>    try:<br>        browser.get(‘<a href="https://www.amazon.cn/" target="_blank" rel="external">https://www.amazon.cn/</a>‘)<br>        input = wait.until(<br>            EC.presence_of_element_located((By.CSS_SELECTOR, ‘# twotabsearchtextbox’))<br>        )<br>        submit = wait.until(<br>            EC.element_to_be_clickable((By.CSS_SELECTOR, ‘# nav-search &gt; form &gt; div.nav-right &gt; div &gt; input’)))<br>        input.send_keys(KEYWORD)<br>        submit.click()<br>        total = wait.until(<br>            EC.presence_of_element_located((By.CSS_SELECTOR, ‘# pagn &gt; span.pagnDisabled’)))<br>        get_products()<br>        print(‘一共’ + total.text + ‘页’)<br>        return total.text<br>    except TimeoutException:<br>        return search()</p>
+<p>def next_page(number):<br>    print(‘正在翻页’, number)<br>    try:<br>        wait.until(EC.text_to_be_present_in_element(<br>            (By.CSS_SELECTOR, ‘# pagnNextString’), ‘下一页’))<br>        submit = wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, ‘# pagnNextString’)))<br>        submit.click()<br>        wait.until(EC.text_to_be_present_in_element(<br>            (By.CSS_SELECTOR, ‘.pagnCur’), str(number)))<br>        get_products()<br>    except TimeoutException:<br>        next_page(number)</p>
+<p>def get_products():<br>    try:<br>        wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, ‘# s-results-list-atf’)))<br>        html = browser.page_source<br>        soup = BeautifulSoup(html, ‘lxml’)<br>        doc = lxml.html.fromstring(html)<br>        date = doc.xpath(‘//*[@class=”s-result-item  celwidget “]/div/div[2]/div[1]/span[2]/text()’)<br>        content = soup.find<em>all(attrs={“id”: re.compile(r’result</em>\d+’)})<br>        for item, time in zip(content, date):<br>            product = {<br>                ‘title’: item.find(class_=’s-access-title’).get<em>text(),<br>                ‘image’: item.find(class</em>=’s-access-image cfMarker’).get(‘src’),<br>                ‘price’: item.find(class_=’a-size-base a-color-price s-price a-text-bold’).get_text(),<br>                ‘date’: time<br>            }<br>            save_to_mongo(product)<br>            print(product)<br>    except Exception as e:<br>        print(e)</p>
+<p>def save_to_mongo(result):<br>    try:<br>        if db[MONGO_TABLE].insert(result):<br>            print(‘存储到mongodb成功’, result)<br>    except Exception:<br>        print(‘存储到mongodb失败’, result)</p>
+<p>def main():<br>    try:<br>        total = search()<br>        total = int(re.compile(‘(\d+)’).search(total).group(1))<br>        for i in range(2, total + 1):<br>            next_page(i)<br>    except Exception as e:<br>        print(‘出错啦’, e)<br>    finally:<br>        browser.close()</p>
+<p>if <strong>name</strong> == ‘<strong>main</strong>‘:<br>    main()<br>```</p>
+<h1 id="五：总结"><a href="#五：总结" class="headerlink" title="五：总结"></a>五：总结</h1><p>这次学习的东西还是很多，selenium用的模块很多，也利用了无头浏览器PhantomJS的不加载图片和缓存。爬取数据的时候使用了不同的方式，并用zip函数一起迭代保存为字典成功导入到mongodb中。<br>贴出我的github地址，我的爬虫代码和学习的基础部分都放进去了，有喜欢的朋友一起学习交流吧！<strong><em><a href="https://github.com/rieuse/learnPython" target="_blank" rel="external">github.com/rieuse/learnPython</a></em></strong></p>
+
       
     </div>
     
@@ -302,12 +339,12 @@
   
     
     <div class="copyright">
-        <p><span>本文标题:</span><a href="/2017/05/22/爬虫6/">爬虫6</a></p>
+        <p><span>本文标题:</span><a href="/2017/05/22/爬虫6/">Python爬虫日记六：Selenium+xpath+bs4爬取亚马逊数据保存到mongodb</a></p>
         <p><span>文章作者:</span><a href="/" title="回到主页">布咯咯_rieuse</a></p>
         <p><span>发布时间:</span>2017-05-22, 23:21:29</p>
-        <p><span>最后更新:</span>2017-05-22, 23:21:29</p>
+        <p><span>最后更新:</span>2017-05-23, 12:41:18</p>
         <p>
-            <span>原始链接:</span><a class="post-url" href="/2017/05/22/爬虫6/" title="爬虫6">http://bulolo.cn/2017/05/22/爬虫6/</a>
+            <span>原始链接:</span><a class="post-url" href="/2017/05/22/爬虫6/" title="Python爬虫日记六：Selenium+xpath+bs4爬取亚马逊数据保存到mongodb">http://bulolo.cn/2017/05/22/爬虫6/</a>
             <span class="copy-path" data-clipboard-text="原文: http://bulolo.cn/2017/05/22/爬虫6/　　作者: 布咯咯_rieuse" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
             <script> var clipboard = new Clipboard('.copy-path'); </script>
         </p>
@@ -322,14 +359,14 @@
         
             <div id="article-nav-newer" class="article-nav-title">
                 <a href="/2017/05/22/爬虫7/">
-                    爬虫7
+                    Python爬虫日记七：批量抓取花瓣网高清美图并保存
                 </a>
             </div>
         
         
             <div id="article-nav-older" class="article-nav-title">
                 <a href="/2017/05/22/爬虫5/">
-                    爬虫5
+                    Python爬虫日记五：使用Selenium爬取一点资讯动态数据
                 </a>
             </div>
         
@@ -341,7 +378,7 @@
     <div id="toc" class="toc-article">
         <strong class="toc-title">文章目录</strong>
         
-            
+            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#一：前言"><span class="toc-number">1.</span> <span class="toc-text">一：前言</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#二：运行环境"><span class="toc-number">2.</span> <span class="toc-text">二：运行环境</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#三：-爬虫中重要（keng）的部分"><span class="toc-number">3.</span> <span class="toc-text">三： 爬虫中重要（keng）的部分</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#browser-webdriver-Firefox"><span class="toc-number">4.</span> <span class="toc-text">browser = webdriver.Firefox()</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#五：总结"><span class="toc-number">5.</span> <span class="toc-text">五：总结</span></a></li></ol>
         
     </div>
     <style>
@@ -377,7 +414,7 @@
         </div>
         <script>
             window._bd_share_config={
-                "common":{"bdSnsKey":{},"bdText":"爬虫6　| 布咯咯_rieuse的博客　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+                "common":{"bdSnsKey":{},"bdText":"Python爬虫日记六：Selenium+xpath+bs4爬取亚马逊数据保存到mongodb　| 布咯咯_rieuse的博客　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
         </script>
     
 
@@ -397,7 +434,7 @@
 
     <div class="scroll" id="post-nav-button">
         
-            <a href="/2017/05/22/爬虫7/" title="上一篇: 爬虫7">
+            <a href="/2017/05/22/爬虫7/" title="上一篇: Python爬虫日记七：批量抓取花瓣网高清美图并保存">
                 <i class="fa fa-angle-left"></i>
             </a>
         
@@ -405,13 +442,13 @@
         <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
 
         
-            <a href="/2017/05/22/爬虫5/" title="下一篇: 爬虫5">
+            <a href="/2017/05/22/爬虫5/" title="下一篇: Python爬虫日记五：使用Selenium爬取一点资讯动态数据">
                 <i class="fa fa-angle-right"></i>
             </a>
         
     </div>
 
-    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2017/05/22/爬虫7/">爬虫7</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/05/22/爬虫6/">爬虫6</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/05/22/爬虫5/">爬虫5</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/05/22/Python爬虫日记4：Charles抓包获取黑大帐号密码验证码并登录/">Python爬虫日记4：Charles抓包获取黑大帐号密码验证码并登录</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/05/22/Python爬虫日记3：爬取v2ex数据用csv保存/">Python爬虫日记3：爬取v2ex数据用csv保存</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/05/22/Python爬虫日记2：使用lxml解析HTML输出对应值/">Python爬虫日记2：使用lxml解析HTML输出对应值</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/05/22/Python爬虫日记1：爬取豆瓣电影中速度与激情8演员图片/">Python爬虫日记1：爬取豆瓣电影中速度与激情8演员图片</a></li></ul>
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2017/05/22/爬虫7/">Python爬虫日记七：批量抓取花瓣网高清美图并保存</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/05/22/爬虫6/">Python爬虫日记六：Selenium+xpath+bs4爬取亚马逊数据保存到mongodb</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/05/22/爬虫5/">Python爬虫日记五：使用Selenium爬取一点资讯动态数据</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/05/22/爬虫4/">Python爬虫日记4：Charles抓包获取黑大帐号密码验证码并登录</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/05/22/爬虫3/">Python爬虫日记3：爬取v2ex数据用csv保存</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/05/22/爬虫2/">Python爬虫日记2：使用lxml解析HTML输出对应值</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/05/22/爬虫1/">Python爬虫日记1：爬取豆瓣电影中速度与激情8演员图片</a></li></ul>
 
 
 
