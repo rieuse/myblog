@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
-  <title>布咯咯_rieuse的博客</title>
-  <subtitle>Python的世界</subtitle>
+  <title>布咯咯_rieuse</title>
+  
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://bulolo.cn/"/>
@@ -117,7 +117,7 @@
     <link href="http://bulolo.cn/2017/05/15/python1/"/>
     <id>http://bulolo.cn/2017/05/15/python1/</id>
     <published>2017-05-15T05:04:42.000Z</published>
-    <updated>2017-05-23T05:08:31.902Z</updated>
+    <updated>2017-05-26T05:30:59.749Z</updated>
     
     <content type="html"><![CDATA[<blockquote>
 <p>斐波那契数列的相关题目是面试常见的，所以我看了些资料总结记录一下这些小的知识点。</p>
@@ -146,6 +146,8 @@
     
     </summary>
     
+    
+      <category term="技巧" scheme="http://bulolo.cn/tags/skill/"/>
     
   </entry>
   
