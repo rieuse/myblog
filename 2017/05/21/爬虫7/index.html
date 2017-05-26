@@ -80,7 +80,7 @@
 <link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="python,爬虫," />
 
 
 
@@ -97,6 +97,7 @@
 
 
 <meta name="description" content="一：前言嘀嘀嘀，上车请刷卡。昨天看到了不错的图片分享网——花瓣，里面的图片质量还不错，所以利用selenium+xpath我把它的妹子的栏目下爬取了下来，以图片栏目名称给文件夹命名分类保存到电脑中。这个妹子主页http://huaban.com/boards/favorite/beauty 是动态加载的，如果想获取更多内容可以模拟下拉，这样就可以更多的图片资源。这种之前爬虫中也做过，但是因为网速不">
+<meta name="keywords" content="python,爬虫">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Python爬虫日记7：批量抓取花瓣网高清美图并保存">
 <meta property="og:url" content="http://bulolo.cn/2017/05/21/爬虫7/index.html">
@@ -109,7 +110,7 @@
 <meta property="og:image" content="http://upload-images.jianshu.io/upload_images/4701426-8e96a09519b2fa7b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
 <meta property="og:image" content="http://upload-images.jianshu.io/upload_images/4701426-15c45e7520131b7f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
 <meta property="og:image" content="http://upload-images.jianshu.io/upload_images/4701426-a2c3ad6cc56eed72.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
-<meta property="og:updated_time" content="2017-05-26T04:54:19.752Z">
+<meta property="og:updated_time" content="2017-05-26T05:13:51.828Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Python爬虫日记7：批量抓取花瓣网高清美图并保存">
 <meta name="twitter:description" content="一：前言嘀嘀嘀，上车请刷卡。昨天看到了不错的图片分享网——花瓣，里面的图片质量还不错，所以利用selenium+xpath我把它的妹子的栏目下爬取了下来，以图片栏目名称给文件夹命名分类保存到电脑中。这个妹子主页http://huaban.com/boards/favorite/beauty 是动态加载的，如果想获取更多内容可以模拟下拉，这样就可以更多的图片资源。这种之前爬虫中也做过，但是因为网速不">
@@ -363,7 +364,7 @@
 <p><img src="http://upload-images.jianshu.io/upload_images/4701426-15c45e7520131b7f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Paste_Image.png"></p>
 <p>5.前面已经获取到栏目的网页和栏目的名称，这里就需要对栏目的网页分析，进入栏目网页后，只是一些缩略图，我们不想要这些低分辨率的图片，所以要再进入每个缩略图中，解析网页获取到真正的高清图片网址。这里也有一个地方比较坑人，就是一个栏目中，不同的图片存放dom格式不一样，所以我这样做<br><figure class="highlight py"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">img_url = doc.xpath(<span class="string">'//*[@id="baidu_image_holder"]/a/img/@src'</span>)</div><div class="line">img_url2 = doc.xpath(<span class="string">'//*[@id="baidu_image_holder"]/img/@src'</span>)</div></pre></td></tr></table></figure></p>
 <p>这就把两种dom格式中的图片地址都获取了，然后把两个地址list合并一下。</p>
-<figure class="highlight makefile"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">img_url +=img_url2</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">img_url +=img_url2</div></pre></td></tr></table></figure>
 <p>在本地创建文件夹使用</p>
 <figure class="highlight py"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">filename = <span class="string">'image\\&#123;&#125;\\'</span>.format(fileName) + str(i) + <span class="string">'.jpg'</span></div></pre></td></tr></table></figure>
 <p>表示文件保存在与这个爬虫代码同级目录image下，然后获取的图片保存在image中按照之前获取的栏目名称的文件夹中。</p>
@@ -396,6 +397,14 @@
     </div>
 
     <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/python/" rel="tag"># python</a>
+          
+            <a href="/tags/Spider/" rel="tag"># 爬虫</a>
+          
+        </div>
       
 
       
@@ -494,6 +503,15 @@
 
           
 
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">2</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
           
 
         </nav>
