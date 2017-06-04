@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://bulolo.cn/"/>
-  <updated>2017-06-04T10:24:54.236Z</updated>
+  <updated>2017-06-04T10:26:42.383Z</updated>
   <id>http://bulolo.cn/</id>
   
   <author>
@@ -20,19 +20,16 @@
     <link href="http://bulolo.cn/2017/06/04/data1/"/>
     <id>http://bulolo.cn/2017/06/04/data1/</id>
     <published>2017-06-04T03:21:35.000Z</published>
-    <updated>2017-06-04T10:24:54.236Z</updated>
+    <updated>2017-06-04T10:26:42.383Z</updated>
     
     <content type="html"><![CDATA[<h1 id="一：前言"><a href="#一：前言" class="headerlink" title="一：前言"></a>一：前言</h1><p>上次把斗鱼弹幕数据抓取搞定后，我就拿来试试用词云分析看看效果，简单学习一下。这是弹幕抓拍去分析的对象是斗鱼主播大司马，因为他直播比较搞笑，虽然我不玩游戏，但是之前看他还是有意思。这次我使用的数据是弹幕爬取后保存到text中的，实现代码放在这里：<a href="https://github.com/rieuse/DouyuTV" target="_blank" rel="external">github.com/rieuse/DouyuTV</a>，有了这个数据后续就可以使用词云分析了。<br><img src="http://upload-images.jianshu.io/upload_images/4701426-bc5ea565f7056a76.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="大司马老师上课"><br><a id="more"></a></p>
-<p>#二：遇到的坑 </p>
-<p>第一次用需要安装几个插件：jieba，scipy，wordcloud，但是这个wordcloud在win下面容易出错。解决方法是使用<a href="http://www.lfd.uci.edu/~gohlke/pythonlibs/" target="_blank" rel="external">http://www.lfd.uci.edu/~gohlke/pythonlibs/</a> 网站下载对应的模块，然后复制到你的电脑目录中，之后使用命令行工具进入该文件夹中，然后执行一下安装操作，我是python3.6 64位电脑：<strong>pip install wordcloud‑1.3.1‑cp36‑cp36m‑win_amd64.whl</strong>其他版本请下载安装对应模块。</p>
-<p>#三：简单原理</p>
-<ul>
+<h1 id="二：遇到的坑"><a href="#二：遇到的坑" class="headerlink" title="二：遇到的坑"></a>二：遇到的坑</h1><p>第一次用需要安装几个插件：jieba，scipy，wordcloud，但是这个wordcloud在win下面容易出错。解决方法是使用<a href="http://www.lfd.uci.edu/~gohlke/pythonlibs/" target="_blank" rel="external">http://www.lfd.uci.edu/~gohlke/pythonlibs/</a> 网站下载对应的模块，然后复制到你的电脑目录中，之后使用命令行工具进入该文件夹中，然后执行一下安装操作，我是python3.6 64位电脑：<strong>pip install wordcloud‑1.3.1‑cp36‑cp36m‑win_amd64.whl</strong>其他版本请下载安装对应模块。</p>
+<h1 id="三：简单原理"><a href="#三：简单原理" class="headerlink" title="三：简单原理"></a>三：简单原理</h1><ul>
 <li>jieba这个模块是用来分词的，把一段文字分解成一个一个的词汇，就像我的锤子手机的大爆炸一样分词。<strong>jieba.cut()</strong>分词函数提供了三个模式：全模式，精确模式，搜索引擎模式。全模式：速度块，扫描成词的词语，但时会出现歧义的词语<br>精确模式：尽可能最准确非切分词语，比较适合作文本分析<br>搜索引擎模式：就是精确模式的基础上，对长词再次切分，提高召回率<br>这里默认的话就是精确模式。第一次可以不用考虑模式问题，先上来弄出个图给自己美滋滋一下再说。</li>
 <li>之后对分词后的数据使用wordcloud模块，进行对词汇分析了</li>
 <li>最后使用matplotlib.pyplot，绘图展现出来。</li>
 </ul>
-<p>#四：代码展现</p>
-<ul>
+<h1 id="四：代码展现"><a href="#四：代码展现" class="headerlink" title="四：代码展现"></a>四：代码展现</h1><ul>
 <li>1.Python的代码量很少，所以学习还是比其他语言来的舒服。这里的就简单这些代码就实现了词云的目的。我这里导入的文档是弹幕爬取后的，代码在我gituhub中，就是把之前弹幕数据保存到mongodb改成只把弹幕内容保存到text文档中。<br><img src="http://upload-images.jianshu.io/upload_images/4701426-9bc9735a6fac3e7f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Paste_Image.png"><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">import jieba,jieba.analyse</div><div class="line">from wordcloud import WordCloud, ImageColorGenerator</div><div class="line">import matplotlib.pyplot as plt</div><div class="line">import os</div><div class="line">import PIL.Image as Image</div><div class="line">import numpy as np</div></pre></td></tr></table></figure>
 </li>
 </ul>
@@ -48,7 +45,7 @@
 </ul>
 <p><img src="http://upload-images.jianshu.io/upload_images/4701426-3a97d0538b12521f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Paste_Image.png"></p>
 <p><img src="http://upload-images.jianshu.io/upload_images/4701426-581351180717765b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Paste_Image.png"></p>
-<p>#五：总结<br>通过两个时间段的词云分析，可以看的出来观众说的最多的，关注点是哪些。这次我做的词云也很简单，后续在研究研究让它更美观一些，精准一些。<br>贴出我的github地址，我的爬虫代码和学习的基础部分都放进去了，有喜欢的朋友可以点击 start follw一起学习交流吧！<strong><a href="https://github.com/rieuse/DouyuTV" target="_blank" rel="external">github.com/rieuse/DouyuTV</a></strong></p>
+<h1 id="五：总结"><a href="#五：总结" class="headerlink" title="五：总结"></a>五：总结</h1><p>通过两个时间段的词云分析，可以看的出来观众说的最多的，关注点是哪些。这次我做的词云也很简单，后续在研究研究让它更美观一些，精准一些。<br>贴出我的github地址，我的爬虫代码和学习的基础部分都放进去了，有喜欢的朋友可以点击 start follw一起学习交流吧！<strong><a href="https://github.com/rieuse/DouyuTV" target="_blank" rel="external">github.com/rieuse/DouyuTV</a></strong></p>
 ]]></content>
     
     <summary type="html">
