@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://bulolo.cn/"/>
-  <updated>2017-05-26T07:24:14.059Z</updated>
+  <updated>2017-06-04T10:24:54.236Z</updated>
   <id>http://bulolo.cn/</id>
   
   <author>
@@ -14,6 +14,142 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Python数据分析：斗鱼弹幕内容词云分析</title>
+    <link href="http://bulolo.cn/2017/06/04/data1/"/>
+    <id>http://bulolo.cn/2017/06/04/data1/</id>
+    <published>2017-06-04T03:21:35.000Z</published>
+    <updated>2017-06-04T10:24:54.236Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="一：前言"><a href="#一：前言" class="headerlink" title="一：前言"></a>一：前言</h1><p>上次把斗鱼弹幕数据抓取搞定后，我就拿来试试用词云分析看看效果，简单学习一下。这是弹幕抓拍去分析的对象是斗鱼主播大司马，因为他直播比较搞笑，虽然我不玩游戏，但是之前看他还是有意思。这次我使用的数据是弹幕爬取后保存到text中的，实现代码放在这里：<a href="https://github.com/rieuse/DouyuTV" target="_blank" rel="external">github.com/rieuse/DouyuTV</a>，有了这个数据后续就可以使用词云分析了。<br><img src="http://upload-images.jianshu.io/upload_images/4701426-bc5ea565f7056a76.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="大司马老师上课"><br><a id="more"></a></p>
+<p>#二：遇到的坑 </p>
+<p>第一次用需要安装几个插件：jieba，scipy，wordcloud，但是这个wordcloud在win下面容易出错。解决方法是使用<a href="http://www.lfd.uci.edu/~gohlke/pythonlibs/" target="_blank" rel="external">http://www.lfd.uci.edu/~gohlke/pythonlibs/</a> 网站下载对应的模块，然后复制到你的电脑目录中，之后使用命令行工具进入该文件夹中，然后执行一下安装操作，我是python3.6 64位电脑：<strong>pip install wordcloud‑1.3.1‑cp36‑cp36m‑win_amd64.whl</strong>其他版本请下载安装对应模块。</p>
+<p>#三：简单原理</p>
+<ul>
+<li>jieba这个模块是用来分词的，把一段文字分解成一个一个的词汇，就像我的锤子手机的大爆炸一样分词。<strong>jieba.cut()</strong>分词函数提供了三个模式：全模式，精确模式，搜索引擎模式。全模式：速度块，扫描成词的词语，但时会出现歧义的词语<br>精确模式：尽可能最准确非切分词语，比较适合作文本分析<br>搜索引擎模式：就是精确模式的基础上，对长词再次切分，提高召回率<br>这里默认的话就是精确模式。第一次可以不用考虑模式问题，先上来弄出个图给自己美滋滋一下再说。</li>
+<li>之后对分词后的数据使用wordcloud模块，进行对词汇分析了</li>
+<li>最后使用matplotlib.pyplot，绘图展现出来。</li>
+</ul>
+<p>#四：代码展现</p>
+<ul>
+<li>1.Python的代码量很少，所以学习还是比其他语言来的舒服。这里的就简单这些代码就实现了词云的目的。我这里导入的文档是弹幕爬取后的，代码在我gituhub中，就是把之前弹幕数据保存到mongodb改成只把弹幕内容保存到text文档中。<br><img src="http://upload-images.jianshu.io/upload_images/4701426-9bc9735a6fac3e7f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Paste_Image.png"><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">import jieba,jieba.analyse</div><div class="line">from wordcloud import WordCloud, ImageColorGenerator</div><div class="line">import matplotlib.pyplot as plt</div><div class="line">import os</div><div class="line">import PIL.Image as Image</div><div class="line">import numpy as np</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line">with open(&apos;大司马即将上课前后.txt&apos;,&apos;r&apos;,encoding=&apos;utf-8&apos;) as f:</div><div class="line">    text = f.read()</div><div class="line">    f.close()</div><div class="line">cut_text = &quot; &quot;.join(jieba.cut(text))  #使用空格连接 进行中文分词</div><div class="line">cut_an= jieba.analyse.extract_tags(cut_text,30)  # 关键词提取,返回权重最高的前30，数字可以不填默认20</div><div class="line"></div><div class="line">d = os.path.dirname(__file__) # 获取当前文件路径</div><div class="line">color_mask = np.array(Image.open(os.path.join(d,&apos;img.jpg&apos;)))   # 设置图片</div><div class="line">cloud = WordCloud(</div><div class="line">    background_color=&apos;#F0F8FF&apos;,      # 参数为设置背景颜色,默认颜色则为黑色</div><div class="line">    font_path=&quot;FZLTKHK--GBK1-0.ttf&quot;, # 使用指定字体可以显示中文，或者修改wordcloud.py文件字体设置并且放入相应字体文件</div><div class="line">    max_words=1000,  # 词云显示的最大词数</div><div class="line">    font_step=10,    # 步调太大，显示的词语就少了</div><div class="line">    mask=color_mask,  #设置背景图片</div><div class="line">    random_state= 15, # 设置有多少种随机生成状态，即有多少种配色方案</div><div class="line">    min_font_size=15,  #字体最小值</div><div class="line">    max_font_size=232, #字体最大值</div><div class="line">    )</div><div class="line">cloud.generate(cut_text)  #对分词后的文本生成词云</div><div class="line">image_colors = ImageColorGenerator(color_mask)  # 从背景图片生成颜色值</div><div class="line">plt.show(cloud.recolor(color_func=image_colors))  # 绘制时用背景图片做为颜色的图片</div><div class="line">plt.imshow(cloud)            # 以图片的形式显示词云</div><div class="line">plt.axis(&apos;off&apos;)                     # 关闭坐标轴</div><div class="line">plt.show()                          # 展示图片</div><div class="line"></div><div class="line">cloud.to_file(os.path.join(d, &apos;pic.jpg&apos;))  # 图片大小将会按照 mask 保存</div></pre></td></tr></table></figure>
+<ul>
+<li>2.执行之后就可以显示出来了：</li>
+</ul>
+<p><img src="http://upload-images.jianshu.io/upload_images/4701426-706611c5b3e75830.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="直播开始前弹幕"></p>
+<p>之后我又对斗鱼主播芜湖大司马直播后一段时间的弹幕分析了一下，结果如下：</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/4701426-209d70682cd2c819.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="直播开始后弹幕"></p>
+<ul>
+<li>3.前面是使用自己的词云分析，之后我把我的两个时间段的弹幕内容放到<a href="http://www.bluemc.cn/" target="_blank" rel="external">bluemc</a>，这里来分析是这样的：</li>
+</ul>
+<p><img src="http://upload-images.jianshu.io/upload_images/4701426-3a97d0538b12521f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Paste_Image.png"></p>
+<p><img src="http://upload-images.jianshu.io/upload_images/4701426-581351180717765b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Paste_Image.png"></p>
+<p>#五：总结<br>通过两个时间段的词云分析，可以看的出来观众说的最多的，关注点是哪些。这次我做的词云也很简单，后续在研究研究让它更美观一些，精准一些。<br>贴出我的github地址，我的爬虫代码和学习的基础部分都放进去了，有喜欢的朋友可以点击 start follw一起学习交流吧！<strong><a href="https://github.com/rieuse/DouyuTV" target="_blank" rel="external">github.com/rieuse/DouyuTV</a></strong></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;一：前言&quot;&gt;&lt;a href=&quot;#一：前言&quot; class=&quot;headerlink&quot; title=&quot;一：前言&quot;&gt;&lt;/a&gt;一：前言&lt;/h1&gt;&lt;p&gt;上次把斗鱼弹幕数据抓取搞定后，我就拿来试试用词云分析看看效果，简单学习一下。这是弹幕抓拍去分析的对象是斗鱼主播大司马，因为他直播比较搞笑，虽然我不玩游戏，但是之前看他还是有意思。这次我使用的数据是弹幕爬取后保存到text中的，实现代码放在这里：&lt;a href=&quot;https://github.com/rieuse/DouyuTV&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;github.com/rieuse/DouyuTV&lt;/a&gt;，有了这个数据后续就可以使用词云分析了。&lt;br&gt;&lt;img src=&quot;http://upload-images.jianshu.io/upload_images/4701426-bc5ea565f7056a76.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&quot; alt=&quot;大司马老师上课&quot;&gt;&lt;br&gt;
+    
+    </summary>
+    
+    
+      <category term="python" scheme="http://bulolo.cn/tags/python/"/>
+    
+      <category term="爬虫" scheme="http://bulolo.cn/tags/Spider/"/>
+    
+      <category term="弹幕" scheme="http://bulolo.cn/tags/%E5%BC%B9%E5%B9%95/"/>
+    
+      <category term="数据" scheme="http://bulolo.cn/tags/%E6%95%B0%E6%8D%AE/"/>
+    
+      <category term="词云" scheme="http://bulolo.cn/tags/%E8%AF%8D%E4%BA%91/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Python爬虫日记8：Python爬虫日记八：利用API实时爬取斗鱼弹幕</title>
+    <link href="http://bulolo.cn/2017/06/03/spider8/"/>
+    <id>http://bulolo.cn/2017/06/03/spider8/</id>
+    <published>2017-06-03T01:21:35.000Z</published>
+    <updated>2017-06-03T01:55:59.466Z</updated>
+    
+    <content type="html"><![CDATA[<p><img src="http://upload-images.jianshu.io/upload_images/4701426-794cd62ab5883346.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="斗鱼"></p>
+<h1 id="一：前言"><a href="#一：前言" class="headerlink" title="一：前言"></a>一：前言</h1><p>这些天一直想做一个斗鱼爬取弹幕，但是socket搞的不清楚，而且这个斗鱼的api接口虽然开放了但是我在github上没有找到可以完美使用的代码。我看了好多文章，学了写然后总结一下。也为后面数据分析做准备，后面先对弹幕简单词云化，然后再对各个房间的数据可视化。<br>代码地址：<strong><a href="https://github.com/rieuse/DouyuTV" target="_blank" rel="external">github.com/rieuse/DouyuTV</a></strong><br><a id="more"></a></p>
+<hr>
+<blockquote>
+<p>这次爬取的房间是斗鱼直播的芜湖大司马，因为他人气比较多，方便分析。主播也是我老乡，嘿嘿。然后把弹幕的信息的uid，昵称，等级，弹幕内容保存mongodb。</p>
+</blockquote>
+<p><strong>先看看效果</strong></p>
+<p><img src="http://upload-images.jianshu.io/upload_images/4701426-7e8fe2be0f306467.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Paste_Image.png"><br><img src="http://upload-images.jianshu.io/upload_images/4701426-75877568d0c8960a.gif?imageMogr2/auto-orient/strip" alt="GIF.gif"></p>
+<hr>
+<h1 id="二：运行环境"><a href="#二：运行环境" class="headerlink" title="二：运行环境"></a>二：运行环境</h1><ul>
+<li>IDE：Pycharm</li>
+<li>Python3.6</li>
+<li>pymongo 3.4.0</li>
+</ul>
+<hr>
+<p>#三：实例分析</p>
+<p>首先要想爬取弹幕要看看官方的<a href="https://github.com/rieuse/learnPython/blob/master/%E6%96%97%E9%B1%BC%E7%9B%B4%E6%92%AD%E5%BC%B9%E5%B9%95%E6%8A%93%E5%8F%96/%E6%96%97%E9%B1%BC%E5%BC%B9%E5%B9%95%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%AC%AC%E4%B8%89%E6%96%B9%E6%8E%A5%E5%85%A5%E5%8D%8F%E8%AE%AEv1.4.1.pdf" target="_blank" rel="external">开发文档</a>。</p>
+<ul>
+<li>第一点就是协议组成：<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">def sendmsg(msgstr):</div><div class="line">    msg = msgstr.encode(&apos;utf-8&apos;)</div><div class="line">    data_length = len(msg) + 8</div><div class="line">    code = 689</div><div class="line">    msgHead = int.to_bytes(data_length, 4, &apos;little&apos;) \</div><div class="line">              + int.to_bytes(data_length, 4, &apos;little&apos;) + int.to_bytes(code, 4, &apos;little&apos;)</div><div class="line">    client.send(msgHead)</div><div class="line">    sent = 0</div><div class="line">    while sent &lt; len(msg):</div><div class="line">        tn = client.send(msg[sent:])</div><div class="line">        sent = sent + tn</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p><img src="http://upload-images.jianshu.io/upload_images/4701426-6b585b39e45d96b2.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Paste_Image.png"></p>
+<ul>
+<li>第二点是登录请求，之后把这个传递给sendmsg即可发送请求：<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"> msg = &apos;type@=loginreq/username@=rieuse/password@=douyu/roomid@=&#123;&#125;/\0&apos;.format(roomid)</div><div class="line">sendmsg(msg)</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p><img src="http://upload-images.jianshu.io/upload_images/4701426-68bcbcf41c0cfb8c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Paste_Image.png"></p>
+<ul>
+<li>第三点是获取弹幕信息<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">msg_more = &apos;type@=joingroup/rid@=&#123;&#125;/gid@=-9999/\0&apos;.format(roomid)</div><div class="line">sendmsg(msg_more)</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p><img src="http://upload-images.jianshu.io/upload_images/4701426-695f8c0712a62fc4.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Paste_Image.png"></p>
+<ul>
+<li><p>第四点是要保存登录状态</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">def keeplive():</div><div class="line">    while True:</div><div class="line">        msg = &apos;type@=keeplive/tick@=&apos; + str(int(time.time())) + &apos;/\0&apos;</div><div class="line">        sendmsg(msg)</div><div class="line">        time.sleep(15)</div></pre></td></tr></table></figure>
+</li>
+<li><p>第五点是要把接受到的byte,转换我们识别的编码，然后保存到monggodb，也可以保存到text文档中。</p>
+</li>
+</ul>
+<p><img src="http://upload-images.jianshu.io/upload_images/4701426-1c54edfbb01f0a88.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Paste_Image.png"></p>
+<hr>
+<ul>
+<li>补充说明<blockquote>
+<p>到这里这个API的主要功能已经了解了，剩下的就是具体实现，有以下几点：</p>
+<ul>
+<li>1.用户输入房间号，获取房间说明</li>
+<li>2.发送数据后，我们就会接受到斗鱼返回的数据，但是返回的数据是二进制所以我 们需要对数据转换编码。</li>
+<li>3.我这里爬取了斗鱼用户发送弹幕的信息有uid，昵称，等级，弹幕内容，这里的等级有的人是空的，如果不处理就会造成错误所以要使用下面处理一下。<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">if not level_more:</div><div class="line">            level_more = b&apos;0&apos;</div></pre></td></tr></table></figure>
+</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+<p>#四：实战代码<br><a href="https://github.com/rieuse/DouyuTV" target="_blank" rel="external">点击查看完整代码</a><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div></pre></td><td class="code"><pre><div class="line">import multiprocessing</div><div class="line">import socket</div><div class="line">import time</div><div class="line">import re</div><div class="line">import pymongo</div><div class="line">import requests</div><div class="line">from bs4 import BeautifulSoup</div><div class="line"></div><div class="line">clients = pymongo.MongoClient(&apos;localhost&apos;)</div><div class="line">db = clients[&quot;DouyuTV_danmu&quot;]</div><div class="line">col = db[&quot;info&quot;]</div><div class="line"></div><div class="line">client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)</div><div class="line">host = socket.gethostbyname(&quot;openbarrage.douyutv.com&quot;)</div><div class="line">port = 8601</div><div class="line">client.connect((host, port))</div><div class="line"></div><div class="line">danmu_path = re.compile(b&apos;txt@=(.+?)/cid@&apos;)</div><div class="line">uid_path = re.compile(b&apos;uid@=(.+?)/nn@&apos;)</div><div class="line">nickname_path = re.compile(b&apos;nn@=(.+?)/txt@&apos;)</div><div class="line">level_path = re.compile(b&apos;level@=([1-9][0-9]?)/sahf&apos;)</div><div class="line"></div><div class="line">def sendmsg(msgstr):</div><div class="line">    msg = msgstr.encode(&apos;utf-8&apos;)</div><div class="line">    data_length = len(msg) + 8</div><div class="line">    code = 689</div><div class="line">    msgHead = int.to_bytes(data_length, 4, &apos;little&apos;) \</div><div class="line">              + int.to_bytes(data_length, 4, &apos;little&apos;) + int.to_bytes(code, 4, &apos;little&apos;)</div><div class="line">    client.send(msgHead)</div><div class="line">    sent = 0</div><div class="line">    while sent &lt; len(msg):</div><div class="line">        tn = client.send(msg[sent:])</div><div class="line">        sent = sent + tn</div><div class="line"></div><div class="line"></div><div class="line">def start(roomid):</div><div class="line">    msg = &apos;type@=loginreq/username@=rieuse/password@=douyu/roomid@=&#123;&#125;/\0&apos;.format(roomid)</div><div class="line">    sendmsg(msg)</div><div class="line">    msg_more = &apos;type@=joingroup/rid@=&#123;&#125;/gid@=-9999/\0&apos;.format(roomid)</div><div class="line">    sendmsg(msg_more)</div><div class="line"></div><div class="line">    print(&apos;---------------欢迎连接到&#123;&#125;的直播间---------------&apos;.format(get_name(roomid)))</div><div class="line">    while True:</div><div class="line">        data = client.recv(1024)</div><div class="line">        uid_more = uid_path.findall(data)</div><div class="line">        nickname_more = nickname_path.findall(data)</div><div class="line">        level_more = level_path.findall(data)</div><div class="line">        danmu_more = danmu_path.findall(data)</div><div class="line">        if not level_more:</div><div class="line">            level_more = b&apos;0&apos;</div><div class="line">        if not data:</div><div class="line">            break</div><div class="line">        else:</div><div class="line">            for i in range(0, len(danmu_more)):</div><div class="line">                try:</div><div class="line">                    product = &#123;</div><div class="line">                        &apos;uid&apos;: uid_more[0].decode(encoding=&apos;utf-8&apos;),</div><div class="line">                        &apos;nickname&apos;: nickname_more[0].decode(encoding=&apos;utf-8&apos;),</div><div class="line">                        &apos;level&apos;: level_more[0].decode(encoding=&apos;utf-8&apos;),</div><div class="line">                        &apos;danmu&apos;: danmu_more[0].decode(encoding=&apos;utf-8&apos;)</div><div class="line">                    &#125;</div><div class="line">                    print(product)</div><div class="line">                    col.insert(product)</div><div class="line">                    print(&apos;成功导入mongodb&apos;)</div><div class="line">                except Exception as e:</div><div class="line">                    print(e)</div><div class="line"></div><div class="line"></div><div class="line">def keeplive():</div><div class="line">    while True:</div><div class="line">        msg = &apos;type@=keeplive/tick@=&apos; + str(int(time.time())) + &apos;/\0&apos;</div><div class="line">        sendmsg(msg)</div><div class="line">        time.sleep(15)</div><div class="line"></div><div class="line"></div><div class="line">def get_name(roomid):</div><div class="line">    r = requests.get(&quot;http://www.douyu.com/&quot; + roomid)</div><div class="line">    soup = BeautifulSoup(r.text, &apos;lxml&apos;)</div><div class="line">    return soup.find(&apos;a&apos;, &#123;&apos;class&apos;, &apos;zb-name&apos;&#125;).string</div><div class="line"></div><div class="line"></div><div class="line">if __name__ == &apos;__main__&apos;:</div><div class="line">    room_id = input(&apos;请出入房间ID： &apos;)</div><div class="line">    p1 = multiprocessing.Process(target=start, args=(room_id,))</div><div class="line">    p2 = multiprocessing.Process(target=keeplive)</div><div class="line">    p1.start()</div><div class="line">    p2.start()</div></pre></td></tr></table></figure></p>
+<h1 id="五：弹幕的后续使用"><a href="#五：弹幕的后续使用" class="headerlink" title="五：弹幕的后续使用"></a>五：弹幕的后续使用</h1><p>这里我们是将弹幕的几个信息，uid，用户昵称，等级，弹幕内容保存到mongodb，后续要对数据分析就可以直接拿出来，如果我们只需要弹幕那么就可以只把弹幕信息保存到txt文档中就行了。<br>贴出我的github地址，我的爬虫代码和学习的基础部分都放进去了，有喜欢的朋友可以点击 start follw一起学习交流吧！<strong><a href="https://github.com/rieuse/DouyuTV" target="_blank" rel="external">github.com/rieuse/DouyuTV</a></strong></p>
+<p><img src="http://upload-images.jianshu.io/upload_images/4701426-607dafc482f194fd.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="加油！"></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;&lt;img src=&quot;http://upload-images.jianshu.io/upload_images/4701426-794cd62ab5883346.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&quot; alt=&quot;斗鱼&quot;&gt;&lt;/p&gt;
+&lt;h1 id=&quot;一：前言&quot;&gt;&lt;a href=&quot;#一：前言&quot; class=&quot;headerlink&quot; title=&quot;一：前言&quot;&gt;&lt;/a&gt;一：前言&lt;/h1&gt;&lt;p&gt;这些天一直想做一个斗鱼爬取弹幕，但是socket搞的不清楚，而且这个斗鱼的api接口虽然开放了但是我在github上没有找到可以完美使用的代码。我看了好多文章，学了写然后总结一下。也为后面数据分析做准备，后面先对弹幕简单词云化，然后再对各个房间的数据可视化。&lt;br&gt;代码地址：&lt;strong&gt;&lt;a href=&quot;https://github.com/rieuse/DouyuTV&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;github.com/rieuse/DouyuTV&lt;/a&gt;&lt;/strong&gt;&lt;br&gt;
+    
+    </summary>
+    
+    
+      <category term="python" scheme="http://bulolo.cn/tags/python/"/>
+    
+      <category term="爬虫" scheme="http://bulolo.cn/tags/Spider/"/>
+    
+      <category term="弹幕" scheme="http://bulolo.cn/tags/%E5%BC%B9%E5%B9%95/"/>
+    
+  </entry>
   
   <entry>
     <title>Python爬虫日记7：批量抓取花瓣网高清美图并保存</title>
