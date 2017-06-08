@@ -1,0 +1,839 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="python,爬虫,异步,多进程," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="一：前言使用requests+BeautifulSoup或者xpath等网页解析工具就可以爬取大部分的网页 ，但是有时爬取的量很大时爬取的速度就让人头疼，今天我就使用三种方式来爬取豌豆荚的设计奖APP相关信息并保存到mongodb，从而对比速度让我们更清楚的认识这些东西用处。">
+<meta name="keywords" content="python,爬虫,异步,多进程">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Python爬虫日记9：Python爬虫日记九：豌豆荚设计奖多进程，异步IO爬取速度对比">
+<meta property="og:url" content="http://bulolo.cn/2017/06/07/spider9/index.html">
+<meta property="og:site_name" content="布咯咯_rieuse">
+<meta property="og:description" content="一：前言使用requests+BeautifulSoup或者xpath等网页解析工具就可以爬取大部分的网页 ，但是有时爬取的量很大时爬取的速度就让人头疼，今天我就使用三种方式来爬取豌豆荚的设计奖APP相关信息并保存到mongodb，从而对比速度让我们更清楚的认识这些东西用处。">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/4701426-fdd4ccad379e3f01.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/4701426-c3b0ddb8b3a89556.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/4701426-13f049fd61f89010.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/4701426-0354e874cebff02b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/4701426-7bdd7bd9cd8e12f8.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/4701426-312c9e164e44e4f5.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/4701426-fcccb5fcc9da33b9.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/4701426-a7b1dda6931cfdee.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:updated_time" content="2017-06-07T15:27:42.395Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Python爬虫日记9：Python爬虫日记九：豌豆荚设计奖多进程，异步IO爬取速度对比">
+<meta name="twitter:description" content="一：前言使用requests+BeautifulSoup或者xpath等网页解析工具就可以爬取大部分的网页 ，但是有时爬取的量很大时爬取的速度就让人头疼，今天我就使用三种方式来爬取豌豆荚的设计奖APP相关信息并保存到mongodb，从而对比速度让我们更清楚的认识这些东西用处。">
+<meta name="twitter:image" content="http://upload-images.jianshu.io/upload_images/4701426-fdd4ccad379e3f01.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://bulolo.cn/2017/06/07/spider9/"/>
+
+
+
+
+
+  <title>Python爬虫日记9：Python爬虫日记九：豌豆荚设计奖多进程，异步IO爬取速度对比 | 布咯咯_rieuse</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?50a461f444436b23f6ab58e6a12a19b1";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//tajs.qq.com/stats?sId=62325199";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+<script>
+  	var _mtac = {};
+  	(function() {
+  		var mta = document.createElement("script");
+  		mta.src = "https://pingjs.qq.com/h5/stats.js?v2.0.4";
+  		mta.setAttribute("name", "MTAH5");
+  		mta.setAttribute("sid", "500460603");
+
+  		var s = document.getElementsByTagName("script")[0];
+  		s.parentNode.insertBefore(mta, s);
+  	})();
+</script>
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">布咯咯_rieuse</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://bulolo.cn/2017/06/07/spider9/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="布咯咯_rieuse">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="布咯咯_rieuse">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Python爬虫日记9：Python爬虫日记九：豌豆荚设计奖多进程，异步IO爬取速度对比</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-06-07T19:21:35+08:00">
+                2017-06-07
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a class="cloud-tie-join-count" href="/2017/06/07/spider9/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count join-count" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><img src="http://upload-images.jianshu.io/upload_images/4701426-fdd4ccad379e3f01.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""></p>
+<h1 id="一：前言"><a href="#一：前言" class="headerlink" title="一：前言"></a>一：前言</h1><p>使用requests+BeautifulSoup或者xpath等网页解析工具就可以爬取大部分的网页 ，但是有时爬取的量很大时爬取的速度就让人头疼，今天我就使用三种方式来爬取豌豆荚的设计奖APP相关信息并保存到mongodb，从而对比速度让我们更清楚的认识这些东西用处。<br><a id="more"></a></p>
+<blockquote>
+<ul>
+<li>正常requests爬取</li>
+<li>requests + pool多进程爬取</li>
+<li>asynico + aiohttp异步IO爬取</li>
+</ul>
+<hr>
+<h1 id="二：运行环境"><a href="#二：运行环境" class="headerlink" title="二：运行环境"></a>二：运行环境</h1><ul>
+<li>IDE：Pycharm 2017</li>
+<li>Python 3.6</li>
+<li>aiohttp 2.1.0</li>
+<li>asyncio 3.4.3</li>
+<li>pymongo 3.4.0</li>
+</ul>
+<hr>
+</blockquote>
+<h1 id="三：实例分析"><a href="#三：实例分析" class="headerlink" title="三：实例分析"></a>三：实例分析</h1><p>1.豌豆荚的设计奖首页是<a href="http://www.wandoujia.com/award" target="_blank" rel="external">http://www.wandoujia.com/award</a>  点击下一页之后就会发现网页地址变成了<a href="http://www.wandoujia.com/award?page=x" target="_blank" rel="external">http://www.wandoujia.com/award?page=x</a>  x就是当前的页数。<br><img src="http://upload-images.jianshu.io/upload_images/4701426-c3b0ddb8b3a89556.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""><br>2.然后来看看本次抓取的信息分布，我抓取的是每个设计奖的背景图片，APP名称，图标，获奖说明。进入浏览器开发者模式后即可查找信息位置。（使用Ctrl+Shift+C选择目标快速到达代码位置，同时这个夸克浏览器也挺不错的，简洁流畅推荐大家安装试试。）<br><img src="http://upload-images.jianshu.io/upload_images/4701426-13f049fd61f89010.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="夸克浏览器"><br>3.信息位置都找到了就可以使用BeautifulSoup来解析网页选择到这些数据，然后保存到mongodb。</p>
+<h1 id="四：实战代码"><a href="#四：实战代码" class="headerlink" title="四：实战代码"></a>四：实战代码</h1><h5 id="完整代码放在github中，github-com-rieuse-learnPython"><a href="#完整代码放在github中，github-com-rieuse-learnPython" class="headerlink" title="完整代码放在github中，github.com/rieuse/learnPython"></a>完整代码放在github中，<a href="https://github.com/rieuse/learnPython" target="_blank" rel="external">github.com/rieuse/learnPython</a></h5><p>共用部分是url的构造，一些headers，代理部分。前几次爬虫可以不用headers和代理，但是测试几次后爬取的网站就可能给你封ip或者限速。我这里就需要这些反ban方法，因为我测试几次就呗网站限制了。<br>这里为了反反爬虫可以加入headers，User-Agent也是随机选择。再配合代理ip就很棒了。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line"># 共用部分</div><div class="line">clients = pymongo.MongoClient(&apos;localhost&apos;)</div><div class="line">db = clients[&quot;wandoujia&quot;]</div><div class="line">col = db[&quot;info&quot;]</div><div class="line"></div><div class="line">urls = [&apos;http://www.wandoujia.com/award?page=&#123;&#125;&apos;.format(num) for num in range(1, 46)]</div><div class="line">UA_LIST = [</div><div class="line">    &quot;Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/536.3 (KHTML, like Gecko) Chrome/19.0.1063.0 Safari/536.3&quot;,</div><div class="line">    &quot;Mozilla/5.0 (Windows NT 5.1) AppleWebKit/536.3 (KHTML, like Gecko) Chrome/19.0.1063.0 Safari/536.3&quot;,</div><div class="line">    &quot;Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_0) AppleWebKit/536.3 (KHTML, like Gecko) Chrome/19.0.1063.0 Safari/536.3&quot;,</div><div class="line">    &quot;Mozilla/5.0 (Windows NT 6.2) AppleWebKit/536.3 (KHTML, like Gecko) Chrome/19.0.1062.0 Safari/536.3&quot;,</div><div class="line">    &quot;Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/536.3 (KHTML, like Gecko) Chrome/19.0.1062.0 Safari/536.3&quot;,</div><div class="line">    &quot;Mozilla/5.0 (Windows NT 6.2) AppleWebKit/536.3 (KHTML, like Gecko) Chrome/19.0.1061.1 Safari/536.3&quot;,</div><div class="line">    &quot;Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/536.3 (KHTML, like Gecko) Chrome/19.0.1061.1 Safari/536.3&quot;,</div><div class="line">    &quot;Mozilla/5.0 (Windows NT 6.1) AppleWebKit/536.3 (KHTML, like Gecko) Chrome/19.0.1061.1 Safari/536.3&quot;,</div><div class="line">    &quot;Mozilla/5.0 (Windows NT 6.2) AppleWebKit/536.3 (KHTML, like Gecko) Chrome/19.0.1061.0 Safari/536.3&quot;,</div><div class="line">    &quot;Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/535.24 (KHTML, like Gecko) Chrome/19.0.1055.1 Safari/535.24&quot;,</div><div class="line">    &quot;Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/535.24 (KHTML, like Gecko) Chrome/19.0.1055.1 Safari/535.24&quot;</div><div class="line">]</div><div class="line">headers = &#123;</div><div class="line">    &apos;Accept&apos;: &apos;text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8&apos;,</div><div class="line">    &apos;Accept-Encoding&apos;: &apos;gzip, deflate, sdch&apos;,</div><div class="line">    &apos;Accept-Language&apos;: &apos;zh-CN,zh;q=0.8,en;q=0.6&apos;,</div><div class="line">    &apos;Connection&apos;: &apos;keep-alive&apos;,</div><div class="line">    &apos;Host&apos;: &apos;www.wandoujia.com&apos;,</div><div class="line">    &apos;User-Agent&apos;: random.choice(UA_LIST)</div><div class="line">&#125;</div><div class="line"></div><div class="line">proxies = &#123;</div><div class="line">    &apos;http&apos;: &apos;http://123.206.6.17:3128&apos;,</div><div class="line">    &apos;https&apos;: &apos;http://123.206.6.17:3128&apos;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h5 id="方式一-正常requests爬取"><a href="#方式一-正常requests爬取" class="headerlink" title="方式一:正常requests爬取"></a>方式一:正常requests爬取</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">def method_1():</div><div class="line">    start = time.time()</div><div class="line">    for url in urls:</div><div class="line">        html = requests.get(url, headers=headers, proxies=proxies).text</div><div class="line">        soup = BeautifulSoup(html, &apos;lxml&apos;)</div><div class="line">        title = soup.find_all(class_=&apos;title&apos;)</div><div class="line">        app_title = soup.find_all(class_=&apos;app-title&apos;)</div><div class="line">        item_cover = soup.find_all(class_=&apos;item-cover&apos;)</div><div class="line">        icon_cover = soup.select(&apos;div.list-wrap &gt; ul &gt; li &gt; div.icon &gt; img&apos;)</div><div class="line">        for title_i, app_title_i, item_cover_i, icon_cover_i in zip(title, app_title, item_cover, icon_cover):</div><div class="line">            content = &#123;</div><div class="line">                &apos;title&apos;: title_i.get_text(),</div><div class="line">                &apos;app_title&apos;: app_title_i.get_text(),</div><div class="line">                &apos;item_cover&apos;: item_cover_i[&apos;data-original&apos;],</div><div class="line">                &apos;icon_cover&apos;: icon_cover_i[&apos;data-original&apos;]</div><div class="line">            &#125;</div><div class="line">            col.insert(content)</div><div class="line">            print(&apos;成功插入一组数据&apos; + str(content))</div><div class="line">    print(&apos;一共用时：&apos; + str(time.time() - start))</div><div class="line"></div><div class="line"></div><div class="line">if __name__ == &apos;__main__&apos;:</div><div class="line">    method_1()</div></pre></td></tr></table></figure>
+<p>执行这部分的代码后运行时间</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/4701426-0354e874cebff02b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="方法一时间"><br>之后mongodb的数据库中就有了这些数据。</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/4701426-7bdd7bd9cd8e12f8.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="mongodb数据"></p>
+<h5 id="方式二-使用Requests-Pool进程池爬取"><a href="#方式二-使用Requests-Pool进程池爬取" class="headerlink" title="方式二:使用Requests + Pool进程池爬取"></a>方式二:使用Requests + Pool进程池爬取</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line">def method_2(url):</div><div class="line">    html = requests.get(url, headers=headers, proxies=proxies).text</div><div class="line">    soup = BeautifulSoup(html, &apos;lxml&apos;)</div><div class="line">    title = soup.find_all(class_=&apos;title&apos;)</div><div class="line">    app_title = soup.find_all(class_=&apos;app-title&apos;)</div><div class="line">    item_cover = soup.find_all(class_=&apos;item-cover&apos;)</div><div class="line">    icon_cover = soup.select(&apos;div.list-wrap &gt; ul &gt; li &gt; div.icon &gt; img&apos;)</div><div class="line">    for title_i, app_title_i, item_cover_i, icon_cover_i in zip(title, app_title, item_cover, icon_cover):</div><div class="line">        content = &#123;</div><div class="line">            &apos;title&apos;: title_i.get_text(),</div><div class="line">            &apos;app_title&apos;: app_title_i.get_text(),</div><div class="line">            &apos;item_cover&apos;: item_cover_i[&apos;data-original&apos;],</div><div class="line">            &apos;icon_cover&apos;: icon_cover_i[&apos;data-original&apos;]</div><div class="line">        &#125;</div><div class="line">        # time.sleep(1)</div><div class="line">        col.insert(content)</div><div class="line">        print(&apos;成功插入一组数据&apos; + str(content))</div><div class="line"></div><div class="line"></div><div class="line">if __name__ == &apos;__main__&apos;:</div><div class="line">    start = time.time()</div><div class="line">    pool = multiprocessing.Pool(4) # 使用4个进程</div><div class="line">    pool.map(method_2, urls) # map函数就是把后面urls列表中的url分别传递给method_2()函数</div><div class="line">    pool.close()</div><div class="line">    pool.join()</div><div class="line">    print(&apos;一共用时：&apos; + str(time.time() - start))</div></pre></td></tr></table></figure>
+<p>执行这部分的代码后运行时间，确实比方法一快了一些</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/4701426-312c9e164e44e4f5.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="方法二时间"></p>
+<h5 id="方式三-使用Asyncio-Aiohttp异步IO爬取"><a href="#方式三-使用Asyncio-Aiohttp异步IO爬取" class="headerlink" title="方式三:使用Asyncio + Aiohttp异步IO爬取"></a>方式三:使用Asyncio + Aiohttp异步IO爬取</h5><p>使用这个方法需要对每个函数前面加async，表示成一个异步函数，调用asyncio.get_event_loop创建线程，run_until_complete方法负责安排执行 tasks中的任务。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line">def method_3():</div><div class="line">    async def get_url(url):</div><div class="line">        async with aiohttp.ClientSession() as session:</div><div class="line">            async with session.get(url) as html:</div><div class="line">                response = await html.text(encoding=&quot;utf-8&quot;)</div><div class="line">                return response</div><div class="line"></div><div class="line">    async def parser(url):</div><div class="line">        html = await get_url(url)</div><div class="line">        soup = BeautifulSoup(html, &apos;lxml&apos;)</div><div class="line">        title = soup.find_all(class_=&apos;title&apos;)</div><div class="line">        app_title = soup.find_all(class_=&apos;app-title&apos;)</div><div class="line">        item_cover = soup.find_all(class_=&apos;item-cover&apos;)</div><div class="line">        icon_cover = soup.select(&apos;div.list-wrap &gt; ul &gt; li &gt; div.icon &gt; img&apos;)</div><div class="line">        for title_i, app_title_i, item_cover_i, icon_cover_i in zip(title, app_title, item_cover, icon_cover):</div><div class="line">            content = &#123;</div><div class="line">                &apos;title&apos;: title_i.get_text(),</div><div class="line">                &apos;app_title&apos;: app_title_i.get_text(),</div><div class="line">                &apos;item_cover&apos;: item_cover_i[&apos;data-original&apos;],</div><div class="line">                &apos;icon_cover&apos;: icon_cover_i[&apos;data-original&apos;]</div><div class="line">            &#125;</div><div class="line">            col.insert(content)</div><div class="line">            print(&apos;成功插入一组数据&apos; + str(content))</div><div class="line"></div><div class="line">    start = time.time()</div><div class="line">    loop = asyncio.get_event_loop()</div><div class="line">    tasks = [parser(url) for url in urls]</div><div class="line">    loop.run_until_complete(asyncio.gather(*tasks))</div><div class="line">    print(time.time() - start)</div><div class="line"></div><div class="line">if __name__ == &apos;__main__&apos;:</div><div class="line">    method_3()</div></pre></td></tr></table></figure></p>
+<p>执行这部分的代码后运行时间，又快了很多。<br><img src="http://upload-images.jianshu.io/upload_images/4701426-fcccb5fcc9da33b9.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="方法三时间"></p>
+<hr>
+<h1 id="五：总结"><a href="#五：总结" class="headerlink" title="五：总结"></a>五：总结</h1><p>使用三种方法爬取数据保存到mongodb，从这里可以看出使用Asyncio + Aiohttp的方法最快，比普通只用requests的方法快很多，如果处理更多的任务的时候使用异步IO是非常有效率的。</p>
+<p>贴出我的github地址，我的爬虫代码和学习的基础部分都放进去了，有喜欢的朋友可以点击 start follw一起学习交流吧！<strong><a href="https://github.com/rieuse/DouyuTV" target="_blank" rel="external">github.com/rieuse/DouyuTV</a></strong></p>
+<p><img src="http://upload-images.jianshu.io/upload_images/4701426-a7b1dda6931cfdee.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="加油！"></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/python/" rel="tag"># python</a>
+          
+            <a href="/tags/Spider/" rel="tag"># 爬虫</a>
+          
+            <a href="/tags/异步/" rel="tag"># 异步</a>
+          
+            <a href="/tags/多进程/" rel="tag"># 多进程</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/06/04/data1/" rel="next" title="Python数据分析：斗鱼弹幕内容词云分析">
+                <i class="fa fa-chevron-left"></i> Python数据分析：斗鱼弹幕内容词云分析
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="cloud-tie-wrapper" class="cloud-tie-wrapper"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.png"
+               alt="布咯咯_rieuse" />
+          <p class="site-author-name" itemprop="name">布咯咯_rieuse</p>
+           
+              <p class="site-description motion-element" itemprop="description">爱编程！爱Python！</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">11</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/rieuse" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://www.jianshu.com/u/28fbebb6ac57" target="_blank" title="简书地址">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  简书地址
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一：前言"><span class="nav-text">一：前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#二：运行环境"><span class="nav-text">二：运行环境</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#三：实例分析"><span class="nav-text">三：实例分析</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#四：实战代码"><span class="nav-text">四：实战代码</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#完整代码放在github中，github-com-rieuse-learnPython"><span class="nav-text">完整代码放在github中，github.com/rieuse/learnPython</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#方式一-正常requests爬取"><span class="nav-text">方式一:正常requests爬取</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#方式二-使用Requests-Pool进程池爬取"><span class="nav-text">方式二:使用Requests + Pool进程池爬取</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#方式三-使用Asyncio-Aiohttp异步IO爬取"><span class="nav-text">方式三:使用Asyncio + Aiohttp异步IO爬取</span></a></li></ol></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#五：总结"><span class="nav-text">五：总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+	  
+
+    </div>
+	
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">布咯咯_rieuse</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+        
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      
+    </span>
+  
+</div>
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.1"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+    
+    <script>
+      var cloudTieConfig = {
+        url: document.location.href, 
+        sourceId: "",
+        productKey: "11e73d48058a495da6f520a63923b7b6",
+        target: "cloud-tie-wrapper"
+      };
+    </script>
+    <script src="https://img1.ws.126.net/f2e/tie/yun/sdk/loader.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</body>
+</html>
