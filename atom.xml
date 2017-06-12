@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://bulolo.cn/"/>
-  <updated>2017-06-12T03:37:50.082Z</updated>
+  <updated>2017-06-12T03:38:40.664Z</updated>
   <id>http://bulolo.cn/</id>
   
   <author>
@@ -16,62 +16,62 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>Scrapy���棺ץȡ������ͼ��վ���±���ͼƬ</title>
+    <title>Scrapy爬虫：抓取大量斗图网站最新表情图片</title>
     <link href="http://bulolo.cn/2017/06/12/spider10/"/>
     <id>http://bulolo.cn/2017/06/12/spider10/</id>
     <published>2017-06-12T01:21:35.000Z</published>
-    <updated>2017-06-12T03:37:50.082Z</updated>
+    <updated>2017-06-12T03:38:40.664Z</updated>
     
     <content type="html"><![CDATA[<p><img src="http://upload-images.jianshu.io/upload_images/4701426-732f41204c843fd8.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Paste_Image.png"></p>
-<h1 id="һ��L��"><a href="#һ��L��" class="headerlink" title="һ��Ŀ��"></a>һ��Ŀ��</h1><p>��һ��ʹ��Scrapy���������ܶ��ӣ�����ȥ�������޸Ĵ����Ϳ��Խ������⡣������ȡ����һ����ͼ��վ�����±���ͼƬ<a href="https://www.doutula.com/photo/list/" target="_blank" rel="external">www.doutula.com/photo/list</a>����ϰʹ��Scrapy���ܲ���ʹ�õ�����user agent��ֹ��ban����ͼ������ÿ�ո��£�һ������ץȡ5�������ҵı��鵽Ӳ���С�Ϊ�˽�ʡʱ���Ҿ�ץȡ��1�����š�<br><a id="more"></a></p>
+<h1 id="一：目标"><a href="#一：目标" class="headerlink" title="一：目标"></a>一：目标</h1><p>第一次使用Scrapy框架遇到很多坑，坚持去搜索，修改代码就可以解决问题。这次爬取的是一个斗图网站的最新表情图片<a href="https://www.doutula.com/photo/list/" target="_blank" rel="external">www.doutula.com/photo/list</a>，练习使用Scrapy框架并且使用的随机user agent防止被ban，斗图表情包每日更新，一共可以抓取5万张左右的表情到硬盘中。为了节省时间我就抓取了1万多张。<br><a id="more"></a></p>
 <hr>
-<h1 id="����Scrapy����"><a href="#����Scrapy����" class="headerlink" title="����Scrapy����"></a>����Scrapy����</h1><p>Scrapy��һ��Ϊ����ȡ��վ���ݣ���ȡ�ṹ�����ݶ���д��Ӧ�ÿ��ܡ� ����Ӧ���ڰ��������ھ�����Ϣ�������洢��ʷ���ݵ�һϵ�еĳ����С�</p>
+<h1 id="二：Scrapy简介"><a href="#二：Scrapy简介" class="headerlink" title="二：Scrapy简介"></a>二：Scrapy简介</h1><p>Scrapy是一个为了爬取网站数据，提取结构性数据而编写的应用框架。 可以应用在包括数据挖掘，信息处理或存储历史数据等一系列的程序中。</p>
 <blockquote>
-<p>ʹ�ù���</p>
+<p>使用过程</p>
 <ul>
-<li>����һ��Scrapy��Ŀ</li>
-<li>������ȡ��Item</li>
-<li>��д��ȡ��վ��?<a href="http://scrapy-chs.readthedocs.io/zh_CN/1.0/topics/spiders.html#topics-spiders" target="_blank" rel="external">spider</a>?����ȡ?<a href="http://scrapy-chs.readthedocs.io/zh_CN/1.0/topics/items.html#topics-items" target="_blank" rel="external">Item</a></li>
-<li>��д?<a href="http://scrapy-chs.readthedocs.io/zh_CN/1.0/topics/item-pipeline.html#topics-item-pipeline" target="_blank" rel="external">Item Pipeline</a>?���洢��ȡ����Item(������)</li>
+<li>创建一个Scrapy项目</li>
+<li>定义提取的Item</li>
+<li>编写爬取网站的?<a href="http://scrapy-chs.readthedocs.io/zh_CN/1.0/topics/spiders.html#topics-spiders" target="_blank" rel="external">spider</a>?并提取?<a href="http://scrapy-chs.readthedocs.io/zh_CN/1.0/topics/items.html#topics-items" target="_blank" rel="external">Item</a></li>
+<li>编写?<a href="http://scrapy-chs.readthedocs.io/zh_CN/1.0/topics/item-pipeline.html#topics-item-pipeline" target="_blank" rel="external">Item Pipeline</a>?来存储提取到的Item(即数据)</li>
 </ul>
 </blockquote>
-<p>��������ͼ��չ����Scrapy�ļܹ���������������ϵͳ�з������������ĸ���(��ɫ��ͷ��ʾ)�� ������ÿ�����������˼򵥽��ܣ�����������ϸ���ݵ����ӡ�����������������<br><img src="http://upload-images.jianshu.io/upload_images/4701426-26f8f9a2007beee4.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Paste_Image.png"><br><strong> ����</strong> </p>
+<p>接下来的图表展现了Scrapy的架构，包括组件及在系统中发生的数据流的概览(绿色箭头所示)。 下面对每个组件都做了简单介绍，并给出了详细内容的链接。数据流如下所描述<br><img src="http://upload-images.jianshu.io/upload_images/4701426-26f8f9a2007beee4.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Paste_Image.png"><br><strong> 组件</strong> </p>
 <ul>
-<li><p>Scrapy Engine<br>���渺��������������ϵͳ������������������������Ӧ��������ʱ�����¼��� ��ϸ���ݲ鿴������������(Data Flow)���֡�</p>
+<li><p>Scrapy Engine<br>引擎负责控制数据流在系统中所有组件中流动，并在相应动作发生时触发事件。 详细内容查看下面的数据流(Data Flow)部分。</p>
 </li>
-<li><p>������(Scheduler)<br>����������������request�����������ӣ��Ա�֮��������������ʱ�ṩ�����档</p>
+<li><p>调度器(Scheduler)<br>调度器从引擎接受request并将他们入队，以便之后引擎请求他们时提供给引擎。</p>
 </li>
-<li><p>������(Downloader)<br>������������ȡҳ�����ݲ��ṩ�����棬�����ṩ��spider��</p>
+<li><p>下载器(Downloader)<br>下载器负责获取页面数据并提供给引擎，而后提供给spider。</p>
 </li>
-<li><p>Spiders<br>Spider��Scrapy�û���д���ڷ���response����ȡitem(����ȡ����item)������������URL���ࡣ ÿ��spider��������һ���ض�(��һЩ)��վ�� ���������뿴?<a href="http://scrapy-chs.readthedocs.io/zh_CN/1.0/topics/spiders.html#topics-spiders" target="_blank" rel="external">Spiders</a>?��</p>
+<li><p>Spiders<br>Spider是Scrapy用户编写用于分析response并提取item(即获取到的item)或额外跟进的URL的类。 每个spider负责处理一个特定(或一些)网站。 更多内容请看?<a href="http://scrapy-chs.readthedocs.io/zh_CN/1.0/topics/spiders.html#topics-spiders" target="_blank" rel="external">Spiders</a>?。</p>
 </li>
-<li><p>Item Pipeline<br>Item Pipeline����������spider��ȡ������item�����͵Ĵ����������� ��֤���־û�(������ȡ�����ݿ���)�� �������ݲ鿴?<a href="http://scrapy-chs.readthedocs.io/zh_CN/1.0/topics/item-pipeline.html#topics-item-pipeline" target="_blank" rel="external">Item Pipeline</a>?��</p>
+<li><p>Item Pipeline<br>Item Pipeline负责处理被spider提取出来的item。典型的处理有清理、 验证及持久化(例如存取到数据库中)。 更多内容查看?<a href="http://scrapy-chs.readthedocs.io/zh_CN/1.0/topics/item-pipeline.html#topics-item-pipeline" target="_blank" rel="external">Item Pipeline</a>?。</p>
 </li>
-<li><p>�������м���(Downloader middlewares)<br>�������м����������漰������֮�����ض�����(specific hook)������Downloader���ݸ�������response�� ���ṩ��һ�������Ļ��ƣ�ͨ�������Զ�����������չScrapy���ܡ����������뿴?<a href="http://scrapy-chs.readthedocs.io/zh_CN/1.0/topics/downloader-middleware.html#topics-downloader-middleware" target="_blank" rel="external">�������м���(Downloader Middleware)</a>?��</p>
+<li><p>下载器中间件(Downloader middlewares)<br>下载器中间件是在引擎及下载器之间的特定钩子(specific hook)，处理Downloader传递给引擎的response。 其提供了一个简便的机制，通过插入自定义代码来扩展Scrapy功能。更多内容请看?<a href="http://scrapy-chs.readthedocs.io/zh_CN/1.0/topics/downloader-middleware.html#topics-downloader-middleware" target="_blank" rel="external">下载器中间件(Downloader Middleware)</a>?。</p>
 </li>
-<li><p>Spider�м���(Spider middlewares)<br>Spider�м����������漰Spider֮�����ض�����(specific hook)������spider������(response)������(items��requests)�� ���ṩ��һ�������Ļ��ƣ�ͨ�������Զ�����������չScrapy���ܡ����������뿴?<a href="http://scrapy-chs.readthedocs.io/zh_CN/1.0/topics/spider-middleware.html#topics-spider-middleware" target="_blank" rel="external">Spider�м���(Middleware)</a>?��</p>
+<li><p>Spider中间件(Spider middlewares)<br>Spider中间件是在引擎及Spider之间的特定钩子(specific hook)，处理spider的输入(response)和输出(items及requests)。 其提供了一个简便的机制，通过插入自定义代码来扩展Scrapy功能。更多内容请看?<a href="http://scrapy-chs.readthedocs.io/zh_CN/1.0/topics/spider-middleware.html#topics-spider-middleware" target="_blank" rel="external">Spider中间件(Middleware)</a>?。</p>
 </li>
 </ul>
 <hr>
-<h1 id="����ʵ������"><a href="#����ʵ������" class="headerlink" title="����ʵ������"></a>����ʵ������</h1><p>1.����վ����ҳ�������¶�ͼ��������ַ��<a href="https://www.doutula.com/photo/list/" target="_blank" rel="external">https://www.doutula.com/photo/list/</a> �������ڶ�ҳ�󿴵���ַ������<a href="https://www.doutula.com/photo/list/?page=2" target="_blank" rel="external">https://www.doutula.com/photo/list/?page=2</a> �������Ǿ�֪������ַ�Ĺ���������page���ǲ�ͬ��ҳ������ôspider�е�start_urls��ʼ���ھ����¶��壬��ȡ1��20ҳ��ͼƬ���顣�����ظ�������ҳ�������������ӡ�<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">start_urls = [&apos;https://www.doutula.com/photo/list/?page=&#123;&#125;&apos;.format(i) for i in range(1, 20)]</div></pre></td></tr></table></figure></p>
-<p>2.���뿪����ģʽ������ҳ�ṹ�����Կ������½ṹ���һ�����һ��xpath��ַ���ɵõ�ȫ���ı������ڵ�a��ǩ���ݡ�a[1]��ʾ��һ��a��ȥ��[1]����ȫ����a��<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">//*[@id=&quot;pic-detail&quot;]/div/div[1]/div[2]/a</div></pre></td></tr></table></figure></p>
-<p><img src="http://upload-images.jianshu.io/upload_images/4701426-df7feb858433c56f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Paste_Image.png"><br>ֵ��ע�����������ı��������֣�һ��jpg��һ��gif��ͼ��������ȡͼƬ��ַʱֻץȡa��ǩ������һ��img��src�ͻ���������������Ҫץȡimg�еĺ���data-original��ֵ������a��ǩ���滹һ��p��ǩ��ͼƬ���飬����Ҳץȡ������ΪͼƬ�ļ������ơ�<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">ͼƬ�������� &apos;http:&apos; + content.xpath(&apos;//img/@data-original&apos;)</div><div class="line">ͼƬ�������� content.xpath(&apos;//p/text()&apos;)</div></pre></td></tr></table></figure></p>
+<h1 id="三：实例分析"><a href="#三：实例分析" class="headerlink" title="三：实例分析"></a>三：实例分析</h1><p>1.从网站的主页进入最新斗图表情后网址是<a href="https://www.doutula.com/photo/list/" target="_blank" rel="external">https://www.doutula.com/photo/list/</a> ，点击第二页后看到网址变成了<a href="https://www.doutula.com/photo/list/?page=2" target="_blank" rel="external">https://www.doutula.com/photo/list/?page=2</a> ，那我们就知道了网址的构成最后的page就是不同的页数。那么spider中的start_urls开始入口就如下定义，爬取1到20页的图片表情。想下载更多表情页数你可以再增加。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">start_urls = [&apos;https://www.doutula.com/photo/list/?page=&#123;&#125;&apos;.format(i) for i in range(1, 20)]</div></pre></td></tr></table></figure></p>
+<p>2.进入开发者模式分析网页结构，可以看到如下结构。右击复制一下xpath地址即可得到全部的表情所在的a标签内容。a[1]表示第一个a，去掉[1]就是全部的a。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">//*[@id=&quot;pic-detail&quot;]/div/div[1]/div[2]/a</div></pre></td></tr></table></figure></p>
+<p><img src="http://upload-images.jianshu.io/upload_images/4701426-df7feb858433c56f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Paste_Image.png"><br>值得注意的是这里的表情有两种：一个jpg，一个gif动图。如果获取图片地址时只抓取a标签下面第一个img的src就会出错，所以我们要抓取img中的含有data-original的值。这里a标签下面还一个p标签是图片简介，我们也抓取下来作为图片文件的名称。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">图片的连接是 &apos;http:&apos; + content.xpath(&apos;//img/@data-original&apos;)</div><div class="line">图片的名称是 content.xpath(&apos;//p/text()&apos;)</div></pre></td></tr></table></figure></p>
 <p><img src="http://upload-images.jianshu.io/upload_images/4701426-f67f62f1a92f7513.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Paste_Image.png"></p>
 <hr>
-<h1 id="�g�ʵս����"><a href="#�g�ʵս����" class="headerlink" title="�ģ�ʵս����"></a>�ģ�ʵս����</h1><p><strong>����������ַ  <a href="https://github.com/rieuse/learnPython/tree/master/ScrapyDoutu" target="_blank" rel="external">github.com/rieuse/learnPython</a></strong><br>1.����ʹ�������й����������봴��һ���µ�Scrapy��Ŀ��֮�󴴽�һ�����档<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">scrapy startproject ScrapyDoutu</div><div class="line">cd ScrapyDoutu\ScrapyDoutu\spiders</div><div class="line">scrapy genspider doutula doutula.com</div></pre></td></tr></table></figure></p>
-<p>2.����Doutu�ļ����е�items.py����Ϊ���´��룬����������ȡ����Ŀ��<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">import scrapy</div><div class="line"></div><div class="line">class DoutuItem(scrapy.Item):</div><div class="line">    img_url = scrapy.Field()</div><div class="line">    name = scrapy.Field()</div></pre></td></tr></table></figure></p>
-<p>3.����spiders�ļ����е�doutula.py����Ϊ���´��룬������������������<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line"># -*- coding: utf-8 -*-</div><div class="line">import os</div><div class="line">import scrapy</div><div class="line">import requests</div><div class="line">from ScrapyDoutu.items import DoutuItems</div><div class="line"></div><div class="line"></div><div class="line">class Doutu(scrapy.Spider):</div><div class="line">    name = &quot;doutu&quot;</div><div class="line">    allowed_domains = [&quot;doutula.com&quot;, &quot;sinaimg.cn&quot;]</div><div class="line">    start_urls = [&apos;https://www.doutula.com/photo/list/?page=&#123;&#125;&apos;.format(i) for i in range(1, 40)] # ����������ȡ40ҳͼƬ</div><div class="line"></div><div class="line">    def parse(self, response):</div><div class="line">        i = 0</div><div class="line">        for content in response.xpath(&apos;//*[@id=&quot;pic-detail&quot;]/div/div[1]/div[2]/a&apos;):</div><div class="line">            i += 1</div><div class="line">            item = DoutuItems()</div><div class="line">            item[&apos;img_url&apos;] = &apos;http:&apos; + content.xpath(&apos;//img/@data-original&apos;).extract()[i]</div><div class="line">            item[&apos;name&apos;] = content.xpath(&apos;//p/text()&apos;).extract()[i]</div><div class="line">            try:</div><div class="line">                if not os.path.exists(&apos;doutu&apos;):</div><div class="line">                    os.makedirs(&apos;doutu&apos;)</div><div class="line">                r = requests.get(item[&apos;img_url&apos;])</div><div class="line">                filename = &apos;doutu\\&#123;&#125;&apos;.format(item[&apos;name&apos;]) + item[&apos;img_url&apos;][-4:]</div><div class="line">                with open(filename, &apos;wb&apos;) as fo:</div><div class="line">                    fo.write(r.content)</div><div class="line">            except:</div><div class="line">                print(&apos;Error&apos;)</div><div class="line">            yield item</div></pre></td></tr></table></figure></p>
-<p>3.�������кܶ�ֵ��ע���Ĳ��֣�</p>
+<h1 id="四：实战代码"><a href="#四：实战代码" class="headerlink" title="四：实战代码"></a>四：实战代码</h1><p><strong>完整代码地址  <a href="https://github.com/rieuse/learnPython/tree/master/ScrapyDoutu" target="_blank" rel="external">github.com/rieuse/learnPython</a></strong><br>1.首先使用命令行工具输入代码创建一个新的Scrapy项目，之后创建一个爬虫。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">scrapy startproject ScrapyDoutu</div><div class="line">cd ScrapyDoutu\ScrapyDoutu\spiders</div><div class="line">scrapy genspider doutula doutula.com</div></pre></td></tr></table></figure></p>
+<p>2.打开Doutu文件夹中的items.py，改为以下代码，定义我们爬取的项目。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">import scrapy</div><div class="line"></div><div class="line">class DoutuItem(scrapy.Item):</div><div class="line">    img_url = scrapy.Field()</div><div class="line">    name = scrapy.Field()</div></pre></td></tr></table></figure></p>
+<p>3.打开spiders文件夹中的doutula.py，改为以下代码，这个是爬虫主程序。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line"># -*- coding: utf-8 -*-</div><div class="line">import os</div><div class="line">import scrapy</div><div class="line">import requests</div><div class="line">from ScrapyDoutu.items import DoutuItems</div><div class="line"></div><div class="line"></div><div class="line">class Doutu(scrapy.Spider):</div><div class="line">    name = &quot;doutu&quot;</div><div class="line">    allowed_domains = [&quot;doutula.com&quot;, &quot;sinaimg.cn&quot;]</div><div class="line">    start_urls = [&apos;https://www.doutula.com/photo/list/?page=&#123;&#125;&apos;.format(i) for i in range(1, 40)] # 我们暂且爬取40页图片</div><div class="line"></div><div class="line">    def parse(self, response):</div><div class="line">        i = 0</div><div class="line">        for content in response.xpath(&apos;//*[@id=&quot;pic-detail&quot;]/div/div[1]/div[2]/a&apos;):</div><div class="line">            i += 1</div><div class="line">            item = DoutuItems()</div><div class="line">            item[&apos;img_url&apos;] = &apos;http:&apos; + content.xpath(&apos;//img/@data-original&apos;).extract()[i]</div><div class="line">            item[&apos;name&apos;] = content.xpath(&apos;//p/text()&apos;).extract()[i]</div><div class="line">            try:</div><div class="line">                if not os.path.exists(&apos;doutu&apos;):</div><div class="line">                    os.makedirs(&apos;doutu&apos;)</div><div class="line">                r = requests.get(item[&apos;img_url&apos;])</div><div class="line">                filename = &apos;doutu\\&#123;&#125;&apos;.format(item[&apos;name&apos;]) + item[&apos;img_url&apos;][-4:]</div><div class="line">                with open(filename, &apos;wb&apos;) as fo:</div><div class="line">                    fo.write(r.content)</div><div class="line">            except:</div><div class="line">                print(&apos;Error&apos;)</div><div class="line">            yield item</div></pre></td></tr></table></figure></p>
+<p>3.这里面有很多值得注意的部分：</p>
 <ul>
-<li>��ΪͼƬ�ĵ�ַ�Ƿ���sinaimg.cn�У�����Ҫ����allowed_domains���б���</li>
-<li><figure class="highlight plain"><figcaption><span>������һЩ����ȡ�����ݣ�[i]�ǽ���ǰ����i��ѭ��ÿ�λ�ȡ��һ����ǩ���ݣ��������������ã��ͻ���ȫ���ı�ǩ���ݷ���һ���ֵ���ֵ�С�</span></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">* ```filename = &apos;doutu\\&#123;&#125;&apos;.format(item[&apos;name&apos;]) + item[&apos;img_url&apos;][-4:]``` ��������ȡͼƬ�����ƣ�����item[&apos;img_url&apos;][-4:]�ǻ�ȡͼƬ��ַ��������λ�����Ϳ��Ա�֤��ͬ���ļ���ʽʹ�ø��Եĺ�׺��</div><div class="line">* ����һ����������xpathû����ȷƥ�䣬��������&lt;GET http://*****&gt; (referer: None)</div><div class="line"></div><div class="line">4.����settings.py��������ץȡ��һ��CONCURRENT_REQUESTS���ô�һЩ��DOWNLOAD_DELAY����СһЩ������Ϊ0.</div></pre></td></tr></table></figure>
+<li>因为图片的地址是放在sinaimg.cn中，所以要加入allowed_domains的列表中</li>
+<li><figure class="highlight plain"><figcaption><span>里面是一些你提取的内容，[i]是结合前面的i的循环每次获取下一个标签内容，如果不这样设置，就会把全部的标签内容放入一个字典的值中。</span></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">* ```filename = &apos;doutu\\&#123;&#125;&apos;.format(item[&apos;name&apos;]) + item[&apos;img_url&apos;][-4:]``` 是用来获取图片的名称，最后item[&apos;img_url&apos;][-4:]是获取图片地址的最后四位这样就可以保证不同的文件格式使用各自的后缀。</div><div class="line">* 最后一点就是如果xpath没有正确匹配，则会出现&lt;GET http://*****&gt; (referer: None)</div><div class="line"></div><div class="line">4.配置settings.py，如果想抓取快一点CONCURRENT_REQUESTS设置大一些，DOWNLOAD_DELAY设置小一些，或者为0.</div></pre></td></tr></table></figure>
 </li>
 </ul>
 <h1 id="coding-utf-8"><a href="#coding-utf-8" class="headerlink" title="-- coding: utf-8 --"></a>-<em>- coding: utf-8 -</em>-</h1><p>BOT_NAME = ‘ScrapyDoutu’</p>
 <p>SPIDER_MODULES = [‘ScrapyDoutu.spiders’]<br>NEWSPIDER_MODULE = ‘ScrapyDoutu.spiders’</p>
 <p>DOWNLOADER_MIDDLEWARES = {<br>    ‘scrapy.downloadermiddlewares.useragent.UserAgentMiddleware’: None,<br>    ‘ScrapyDoutu.middlewares.RotateUserAgentMiddleware’: 400,<br>}</p>
-<p>ROBOTSTXT_OBEY = False # ����ѭ��վ��robots.txt����<br>CONCURRENT_REQUESTS = 16 #Scrapy downloader ��������(concurrent requests)������ֵ<br>DOWNLOAD_DELAY = 0.2 # ����ͬһ����վҳ��ǰ�ȴ���ʱ�䣬��������������ȡ�ٶȼ���������ѹ����<br>COOKIES_ENABLED = False # �ر�cookies</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">5.����middleware.py����settings�е�UA���ÿ���������������ѡ��UA��һ���ķ�banЧ������ԭ�д��������ϼ����������롣������user_agent_list���Լ������ࡣ</div></pre></td></tr></table></figure>
+<p>ROBOTSTXT_OBEY = False # 不遵循网站的robots.txt策略<br>CONCURRENT_REQUESTS = 16 #Scrapy downloader 并发请求(concurrent requests)的最大值<br>DOWNLOAD_DELAY = 0.2 # 下载同一个网站页面前等待的时间，可以用来限制爬取速度减轻服务器压力。<br>COOKIES_ENABLED = False # 关闭cookies</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">5.配置middleware.py配合settings中的UA设置可以在下载中随机选择UA有一定的反ban效果，在原有代码基础上加入下面代码。这里的user_agent_list可以加入更多。</div></pre></td></tr></table></figure>
 <p>import random<br>from scrapy.downloadermiddlewares.useragent import UserAgentMiddleware</p>
 <p>class RotateUserAgentMiddleware(UserAgentMiddleware):<br>    def <strong>init</strong>(self, user_agent=’’):<br>        self.user_agent = user_agent</p>
 <pre><code>def process_request(self, request, spider):
@@ -100,28 +100,28 @@ user_agent_list = [
     &quot;Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/535.24 (KHTML, like Gecko) Chrome/19.0.1055.1 Safari/535.24&quot;,
     &quot;Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/535.24 (KHTML, like Gecko) Chrome/19.0.1055.1 Safari/535.24&quot;
 ]
-</code></pre><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">6.������Ϊֹ�����붼�Ѿ������ˡ���ô��ʼִ�аɣ�</div><div class="line">```scrapy crawl doutu</div></pre></td></tr></table></figure>
-<p>֮�����Կ���һ�����أ�һ���޸�User Agent��<br><img src="http://upload-images.jianshu.io/upload_images/4701426-d650dd3b084ba0fc.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Paste_Image.png"></p>
+</code></pre><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">6.到现在为止，代码都已经完成了。那么开始执行吧！</div><div class="line">```scrapy crawl doutu</div></pre></td></tr></table></figure>
+<p>之后可以看到一边下载，一边修改User Agent。<br><img src="http://upload-images.jianshu.io/upload_images/4701426-d650dd3b084ba0fc.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Paste_Image.png"></p>
 <hr>
-<h1 id="�壺�ܽ�"><a href="#�壺�ܽ�" class="headerlink" title="�壺�ܽ�"></a>�壺�ܽ�</h1><p>ѧϰʹ��Scrapy�����ܶ��ӣ�����ǿ��������ϵͳ�������Ҹо��µ������Ըо�Scrapy���Ǻ�ǿ����Ҳ����˼����������ѧϰScrapy�������������ݡ�</p>
-<p>�����ҵ�github��ַ���ҵ�����������ѧϰ�Ļ������ֶ��Ž�ȥ�ˣ���ϲ�������ѿ��Ե��� start follwһ��ѧϰ�����ɣ�<strong><a href="https://github.com/rieuse/learnPython" target="_blank" rel="external">github.com/rieuse/learnPython</a></strong></p>
+<h1 id="五：总结"><a href="#五：总结" class="headerlink" title="五：总结"></a>五：总结</h1><p>学习使用Scrapy遇到很多坑，但是强大的搜索系统不会让我感觉孤单。所以感觉Scrapy还是很强大的也很意思，后面继续学习Scrapy的其他方面内容。</p>
+<p>贴出我的github地址，我的爬虫代码和学习的基础部分都放进去了，有喜欢的朋友可以点击 start follw一起学习交流吧！<strong><a href="https://github.com/rieuse/learnPython" target="_blank" rel="external">github.com/rieuse/learnPython</a></strong></p>
 ]]></content>
     
     <summary type="html">
     
       &lt;p&gt;&lt;img src=&quot;http://upload-images.jianshu.io/upload_images/4701426-732f41204c843fd8.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&quot; alt=&quot;Paste_Image.png&quot;&gt;&lt;/p&gt;
-&lt;h1 id=&quot;һ��L��&quot;&gt;&lt;a href=&quot;#һ��L��&quot; class=&quot;headerlink&quot; title=&quot;һ��Ŀ��&quot;&gt;&lt;/a&gt;һ��Ŀ��&lt;/h1&gt;&lt;p&gt;��һ��ʹ��Scrapy���������ܶ��ӣ�����ȥ�������޸Ĵ����Ϳ��Խ������⡣������ȡ����һ����ͼ��վ�����±���ͼƬ&lt;a href=&quot;https://www.doutula.com/photo/list/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;www.doutula.com/photo/list&lt;/a&gt;����ϰʹ��Scrapy���ܲ���ʹ�õ�����user agent��ֹ��ban����ͼ������ÿ�ո��£�һ������ץȡ5�������ҵı��鵽Ӳ���С�Ϊ�˽�ʡʱ���Ҿ�ץȡ��1�����š�&lt;br&gt;
+&lt;h1 id=&quot;一：目标&quot;&gt;&lt;a href=&quot;#一：目标&quot; class=&quot;headerlink&quot; title=&quot;一：目标&quot;&gt;&lt;/a&gt;一：目标&lt;/h1&gt;&lt;p&gt;第一次使用Scrapy框架遇到很多坑，坚持去搜索，修改代码就可以解决问题。这次爬取的是一个斗图网站的最新表情图片&lt;a href=&quot;https://www.doutula.com/photo/list/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;www.doutula.com/photo/list&lt;/a&gt;，练习使用Scrapy框架并且使用的随机user agent防止被ban，斗图表情包每日更新，一共可以抓取5万张左右的表情到硬盘中。为了节省时间我就抓取了1万多张。&lt;br&gt;
     
     </summary>
     
     
       <category term="python" scheme="http://bulolo.cn/tags/python/"/>
     
-      <category term="����" scheme="http://bulolo.cn/tags/%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD/"/>
+      <category term="爬虫" scheme="http://bulolo.cn/tags/Spider/"/>
     
       <category term="scpray" scheme="http://bulolo.cn/tags/scpray/"/>
     
-      <category term="ͼƬ" scheme="http://bulolo.cn/tags/%CD%BCT/"/>
+      <category term="图片" scheme="http://bulolo.cn/tags/%E5%9B%BE%E7%89%87/"/>
     
   </entry>
   
