@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://bulolo.cn/"/>
-  <updated>2017-06-07T15:27:42.395Z</updated>
+  <updated>2017-06-12T03:37:50.082Z</updated>
   <id>http://bulolo.cn/</id>
   
   <author>
@@ -16,11 +16,121 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>Scrapy���棺ץȡ������ͼ��վ���±���ͼƬ</title>
+    <link href="http://bulolo.cn/2017/06/12/spider10/"/>
+    <id>http://bulolo.cn/2017/06/12/spider10/</id>
+    <published>2017-06-12T01:21:35.000Z</published>
+    <updated>2017-06-12T03:37:50.082Z</updated>
+    
+    <content type="html"><![CDATA[<p><img src="http://upload-images.jianshu.io/upload_images/4701426-732f41204c843fd8.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Paste_Image.png"></p>
+<h1 id="һ��L��"><a href="#һ��L��" class="headerlink" title="һ��Ŀ��"></a>һ��Ŀ��</h1><p>��һ��ʹ��Scrapy���������ܶ��ӣ�����ȥ�������޸Ĵ����Ϳ��Խ������⡣������ȡ����һ����ͼ��վ�����±���ͼƬ<a href="https://www.doutula.com/photo/list/" target="_blank" rel="external">www.doutula.com/photo/list</a>����ϰʹ��Scrapy���ܲ���ʹ�õ�����user agent��ֹ��ban����ͼ������ÿ�ո��£�һ������ץȡ5�������ҵı��鵽Ӳ���С�Ϊ�˽�ʡʱ���Ҿ�ץȡ��1�����š�<br><a id="more"></a></p>
+<hr>
+<h1 id="����Scrapy����"><a href="#����Scrapy����" class="headerlink" title="����Scrapy����"></a>����Scrapy����</h1><p>Scrapy��һ��Ϊ����ȡ��վ���ݣ���ȡ�ṹ�����ݶ���д��Ӧ�ÿ��ܡ� ����Ӧ���ڰ��������ھ�����Ϣ�������洢��ʷ���ݵ�һϵ�еĳ����С�</p>
+<blockquote>
+<p>ʹ�ù���</p>
+<ul>
+<li>����һ��Scrapy��Ŀ</li>
+<li>������ȡ��Item</li>
+<li>��д��ȡ��վ��?<a href="http://scrapy-chs.readthedocs.io/zh_CN/1.0/topics/spiders.html#topics-spiders" target="_blank" rel="external">spider</a>?����ȡ?<a href="http://scrapy-chs.readthedocs.io/zh_CN/1.0/topics/items.html#topics-items" target="_blank" rel="external">Item</a></li>
+<li>��д?<a href="http://scrapy-chs.readthedocs.io/zh_CN/1.0/topics/item-pipeline.html#topics-item-pipeline" target="_blank" rel="external">Item Pipeline</a>?���洢��ȡ����Item(������)</li>
+</ul>
+</blockquote>
+<p>��������ͼ��չ����Scrapy�ļܹ���������������ϵͳ�з������������ĸ���(��ɫ��ͷ��ʾ)�� ������ÿ�����������˼򵥽��ܣ�����������ϸ���ݵ����ӡ�����������������<br><img src="http://upload-images.jianshu.io/upload_images/4701426-26f8f9a2007beee4.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Paste_Image.png"><br><strong> ����</strong> </p>
+<ul>
+<li><p>Scrapy Engine<br>���渺��������������ϵͳ������������������������Ӧ��������ʱ�����¼��� ��ϸ���ݲ鿴������������(Data Flow)���֡�</p>
+</li>
+<li><p>������(Scheduler)<br>����������������request�����������ӣ��Ա�֮��������������ʱ�ṩ�����档</p>
+</li>
+<li><p>������(Downloader)<br>������������ȡҳ�����ݲ��ṩ�����棬�����ṩ��spider��</p>
+</li>
+<li><p>Spiders<br>Spider��Scrapy�û���д���ڷ���response����ȡitem(����ȡ����item)������������URL���ࡣ ÿ��spider��������һ���ض�(��һЩ)��վ�� ���������뿴?<a href="http://scrapy-chs.readthedocs.io/zh_CN/1.0/topics/spiders.html#topics-spiders" target="_blank" rel="external">Spiders</a>?��</p>
+</li>
+<li><p>Item Pipeline<br>Item Pipeline����������spider��ȡ������item�����͵Ĵ����������� ��֤���־û�(������ȡ�����ݿ���)�� �������ݲ鿴?<a href="http://scrapy-chs.readthedocs.io/zh_CN/1.0/topics/item-pipeline.html#topics-item-pipeline" target="_blank" rel="external">Item Pipeline</a>?��</p>
+</li>
+<li><p>�������м���(Downloader middlewares)<br>�������м����������漰������֮�����ض�����(specific hook)������Downloader���ݸ�������response�� ���ṩ��һ�������Ļ��ƣ�ͨ�������Զ�����������չScrapy���ܡ����������뿴?<a href="http://scrapy-chs.readthedocs.io/zh_CN/1.0/topics/downloader-middleware.html#topics-downloader-middleware" target="_blank" rel="external">�������м���(Downloader Middleware)</a>?��</p>
+</li>
+<li><p>Spider�м���(Spider middlewares)<br>Spider�м����������漰Spider֮�����ض�����(specific hook)������spider������(response)������(items��requests)�� ���ṩ��һ�������Ļ��ƣ�ͨ�������Զ�����������չScrapy���ܡ����������뿴?<a href="http://scrapy-chs.readthedocs.io/zh_CN/1.0/topics/spider-middleware.html#topics-spider-middleware" target="_blank" rel="external">Spider�м���(Middleware)</a>?��</p>
+</li>
+</ul>
+<hr>
+<h1 id="����ʵ������"><a href="#����ʵ������" class="headerlink" title="����ʵ������"></a>����ʵ������</h1><p>1.����վ����ҳ�������¶�ͼ��������ַ��<a href="https://www.doutula.com/photo/list/" target="_blank" rel="external">https://www.doutula.com/photo/list/</a> �������ڶ�ҳ�󿴵���ַ������<a href="https://www.doutula.com/photo/list/?page=2" target="_blank" rel="external">https://www.doutula.com/photo/list/?page=2</a> �������Ǿ�֪������ַ�Ĺ���������page���ǲ�ͬ��ҳ������ôspider�е�start_urls��ʼ���ھ����¶��壬��ȡ1��20ҳ��ͼƬ���顣�����ظ�������ҳ�������������ӡ�<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">start_urls = [&apos;https://www.doutula.com/photo/list/?page=&#123;&#125;&apos;.format(i) for i in range(1, 20)]</div></pre></td></tr></table></figure></p>
+<p>2.���뿪����ģʽ������ҳ�ṹ�����Կ������½ṹ���һ�����һ��xpath��ַ���ɵõ�ȫ���ı������ڵ�a��ǩ���ݡ�a[1]��ʾ��һ��a��ȥ��[1]����ȫ����a��<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">//*[@id=&quot;pic-detail&quot;]/div/div[1]/div[2]/a</div></pre></td></tr></table></figure></p>
+<p><img src="http://upload-images.jianshu.io/upload_images/4701426-df7feb858433c56f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Paste_Image.png"><br>ֵ��ע�����������ı��������֣�һ��jpg��һ��gif��ͼ��������ȡͼƬ��ַʱֻץȡa��ǩ������һ��img��src�ͻ���������������Ҫץȡimg�еĺ���data-original��ֵ������a��ǩ���滹һ��p��ǩ��ͼƬ���飬����Ҳץȡ������ΪͼƬ�ļ������ơ�<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">ͼƬ�������� &apos;http:&apos; + content.xpath(&apos;//img/@data-original&apos;)</div><div class="line">ͼƬ�������� content.xpath(&apos;//p/text()&apos;)</div></pre></td></tr></table></figure></p>
+<p><img src="http://upload-images.jianshu.io/upload_images/4701426-f67f62f1a92f7513.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Paste_Image.png"></p>
+<hr>
+<h1 id="�g�ʵս����"><a href="#�g�ʵս����" class="headerlink" title="�ģ�ʵս����"></a>�ģ�ʵս����</h1><p><strong>����������ַ  <a href="https://github.com/rieuse/learnPython/tree/master/ScrapyDoutu" target="_blank" rel="external">github.com/rieuse/learnPython</a></strong><br>1.����ʹ�������й����������봴��һ���µ�Scrapy��Ŀ��֮�󴴽�һ�����档<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">scrapy startproject ScrapyDoutu</div><div class="line">cd ScrapyDoutu\ScrapyDoutu\spiders</div><div class="line">scrapy genspider doutula doutula.com</div></pre></td></tr></table></figure></p>
+<p>2.����Doutu�ļ����е�items.py����Ϊ���´��룬����������ȡ����Ŀ��<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">import scrapy</div><div class="line"></div><div class="line">class DoutuItem(scrapy.Item):</div><div class="line">    img_url = scrapy.Field()</div><div class="line">    name = scrapy.Field()</div></pre></td></tr></table></figure></p>
+<p>3.����spiders�ļ����е�doutula.py����Ϊ���´��룬������������������<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line"># -*- coding: utf-8 -*-</div><div class="line">import os</div><div class="line">import scrapy</div><div class="line">import requests</div><div class="line">from ScrapyDoutu.items import DoutuItems</div><div class="line"></div><div class="line"></div><div class="line">class Doutu(scrapy.Spider):</div><div class="line">    name = &quot;doutu&quot;</div><div class="line">    allowed_domains = [&quot;doutula.com&quot;, &quot;sinaimg.cn&quot;]</div><div class="line">    start_urls = [&apos;https://www.doutula.com/photo/list/?page=&#123;&#125;&apos;.format(i) for i in range(1, 40)] # ����������ȡ40ҳͼƬ</div><div class="line"></div><div class="line">    def parse(self, response):</div><div class="line">        i = 0</div><div class="line">        for content in response.xpath(&apos;//*[@id=&quot;pic-detail&quot;]/div/div[1]/div[2]/a&apos;):</div><div class="line">            i += 1</div><div class="line">            item = DoutuItems()</div><div class="line">            item[&apos;img_url&apos;] = &apos;http:&apos; + content.xpath(&apos;//img/@data-original&apos;).extract()[i]</div><div class="line">            item[&apos;name&apos;] = content.xpath(&apos;//p/text()&apos;).extract()[i]</div><div class="line">            try:</div><div class="line">                if not os.path.exists(&apos;doutu&apos;):</div><div class="line">                    os.makedirs(&apos;doutu&apos;)</div><div class="line">                r = requests.get(item[&apos;img_url&apos;])</div><div class="line">                filename = &apos;doutu\\&#123;&#125;&apos;.format(item[&apos;name&apos;]) + item[&apos;img_url&apos;][-4:]</div><div class="line">                with open(filename, &apos;wb&apos;) as fo:</div><div class="line">                    fo.write(r.content)</div><div class="line">            except:</div><div class="line">                print(&apos;Error&apos;)</div><div class="line">            yield item</div></pre></td></tr></table></figure></p>
+<p>3.�������кܶ�ֵ��ע���Ĳ��֣�</p>
+<ul>
+<li>��ΪͼƬ�ĵ�ַ�Ƿ���sinaimg.cn�У�����Ҫ����allowed_domains���б���</li>
+<li><figure class="highlight plain"><figcaption><span>������һЩ����ȡ�����ݣ�[i]�ǽ���ǰ����i��ѭ��ÿ�λ�ȡ��һ����ǩ���ݣ��������������ã��ͻ���ȫ���ı�ǩ���ݷ���һ���ֵ���ֵ�С�</span></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">* ```filename = &apos;doutu\\&#123;&#125;&apos;.format(item[&apos;name&apos;]) + item[&apos;img_url&apos;][-4:]``` ��������ȡͼƬ�����ƣ�����item[&apos;img_url&apos;][-4:]�ǻ�ȡͼƬ��ַ��������λ�����Ϳ��Ա�֤��ͬ���ļ���ʽʹ�ø��Եĺ�׺��</div><div class="line">* ����һ����������xpathû����ȷƥ�䣬��������&lt;GET http://*****&gt; (referer: None)</div><div class="line"></div><div class="line">4.����settings.py��������ץȡ��һ��CONCURRENT_REQUESTS���ô�һЩ��DOWNLOAD_DELAY����СһЩ������Ϊ0.</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h1 id="coding-utf-8"><a href="#coding-utf-8" class="headerlink" title="-- coding: utf-8 --"></a>-<em>- coding: utf-8 -</em>-</h1><p>BOT_NAME = ‘ScrapyDoutu’</p>
+<p>SPIDER_MODULES = [‘ScrapyDoutu.spiders’]<br>NEWSPIDER_MODULE = ‘ScrapyDoutu.spiders’</p>
+<p>DOWNLOADER_MIDDLEWARES = {<br>    ‘scrapy.downloadermiddlewares.useragent.UserAgentMiddleware’: None,<br>    ‘ScrapyDoutu.middlewares.RotateUserAgentMiddleware’: 400,<br>}</p>
+<p>ROBOTSTXT_OBEY = False # ����ѭ��վ��robots.txt����<br>CONCURRENT_REQUESTS = 16 #Scrapy downloader ��������(concurrent requests)������ֵ<br>DOWNLOAD_DELAY = 0.2 # ����ͬһ����վҳ��ǰ�ȴ���ʱ�䣬��������������ȡ�ٶȼ���������ѹ����<br>COOKIES_ENABLED = False # �ر�cookies</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">5.����middleware.py����settings�е�UA���ÿ���������������ѡ��UA��һ���ķ�banЧ������ԭ�д��������ϼ����������롣������user_agent_list���Լ������ࡣ</div></pre></td></tr></table></figure>
+<p>import random<br>from scrapy.downloadermiddlewares.useragent import UserAgentMiddleware</p>
+<p>class RotateUserAgentMiddleware(UserAgentMiddleware):<br>    def <strong>init</strong>(self, user_agent=’’):<br>        self.user_agent = user_agent</p>
+<pre><code>def process_request(self, request, spider):
+    ua = random.choice(self.user_agent_list)
+    if ua:
+        print(ua)
+        request.headers.setdefault(&apos;User-Agent&apos;, ua)
+
+user_agent_list = [
+    &quot;Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.1 (KHTML, like Gecko) Chrome/22.0.1207.1 Safari/537.1&quot;
+    &quot;Mozilla/5.0 (X11; CrOS i686 2268.111.0) AppleWebKit/536.11 (KHTML, like Gecko) Chrome/20.0.1132.57 Safari/536.11&quot;,
+    &quot;Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/536.6 (KHTML, like Gecko) Chrome/20.0.1092.0 Safari/536.6&quot;,
+    &quot;Mozilla/5.0 (Windows NT 6.2) AppleWebKit/536.6 (KHTML, like Gecko) Chrome/20.0.1090.0 Safari/536.6&quot;,
+    &quot;Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.1 (KHTML, like Gecko) Chrome/19.77.34.5 Safari/537.1&quot;,
+    &quot;Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/536.5 (KHTML, like Gecko) Chrome/19.0.1084.9 Safari/536.5&quot;,
+    &quot;Mozilla/5.0 (Windows NT 6.0) AppleWebKit/536.5 (KHTML, like Gecko) Chrome/19.0.1084.36 Safari/536.5&quot;,
+    &quot;Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/536.3 (KHTML, like Gecko) Chrome/19.0.1063.0 Safari/536.3&quot;,
+    &quot;Mozilla/5.0 (Windows NT 5.1) AppleWebKit/536.3 (KHTML, like Gecko) Chrome/19.0.1063.0 Safari/536.3&quot;,
+    &quot;Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_0) AppleWebKit/536.3 (KHTML, like Gecko) Chrome/19.0.1063.0 Safari/536.3&quot;,
+    &quot;Mozilla/5.0 (Windows NT 6.2) AppleWebKit/536.3 (KHTML, like Gecko) Chrome/19.0.1062.0 Safari/536.3&quot;,
+    &quot;Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/536.3 (KHTML, like Gecko) Chrome/19.0.1062.0 Safari/536.3&quot;,
+    &quot;Mozilla/5.0 (Windows NT 6.2) AppleWebKit/536.3 (KHTML, like Gecko) Chrome/19.0.1061.1 Safari/536.3&quot;,
+    &quot;Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/536.3 (KHTML, like Gecko) Chrome/19.0.1061.1 Safari/536.3&quot;,
+    &quot;Mozilla/5.0 (Windows NT 6.1) AppleWebKit/536.3 (KHTML, like Gecko) Chrome/19.0.1061.1 Safari/536.3&quot;,
+    &quot;Mozilla/5.0 (Windows NT 6.2) AppleWebKit/536.3 (KHTML, like Gecko) Chrome/19.0.1061.0 Safari/536.3&quot;,
+    &quot;Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/535.24 (KHTML, like Gecko) Chrome/19.0.1055.1 Safari/535.24&quot;,
+    &quot;Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/535.24 (KHTML, like Gecko) Chrome/19.0.1055.1 Safari/535.24&quot;
+]
+</code></pre><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">6.������Ϊֹ�����붼�Ѿ������ˡ���ô��ʼִ�аɣ�</div><div class="line">```scrapy crawl doutu</div></pre></td></tr></table></figure>
+<p>֮�����Կ���һ�����أ�һ���޸�User Agent��<br><img src="http://upload-images.jianshu.io/upload_images/4701426-d650dd3b084ba0fc.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Paste_Image.png"></p>
+<hr>
+<h1 id="�壺�ܽ�"><a href="#�壺�ܽ�" class="headerlink" title="�壺�ܽ�"></a>�壺�ܽ�</h1><p>ѧϰʹ��Scrapy�����ܶ��ӣ�����ǿ��������ϵͳ�������Ҹо��µ������Ըо�Scrapy���Ǻ�ǿ����Ҳ����˼����������ѧϰScrapy�������������ݡ�</p>
+<p>�����ҵ�github��ַ���ҵ�����������ѧϰ�Ļ������ֶ��Ž�ȥ�ˣ���ϲ�������ѿ��Ե��� start follwһ��ѧϰ�����ɣ�<strong><a href="https://github.com/rieuse/learnPython" target="_blank" rel="external">github.com/rieuse/learnPython</a></strong></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;&lt;img src=&quot;http://upload-images.jianshu.io/upload_images/4701426-732f41204c843fd8.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&quot; alt=&quot;Paste_Image.png&quot;&gt;&lt;/p&gt;
+&lt;h1 id=&quot;һ��L��&quot;&gt;&lt;a href=&quot;#һ��L��&quot; class=&quot;headerlink&quot; title=&quot;һ��Ŀ��&quot;&gt;&lt;/a&gt;һ��Ŀ��&lt;/h1&gt;&lt;p&gt;��һ��ʹ��Scrapy���������ܶ��ӣ�����ȥ�������޸Ĵ����Ϳ��Խ������⡣������ȡ����һ����ͼ��վ�����±���ͼƬ&lt;a href=&quot;https://www.doutula.com/photo/list/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;www.doutula.com/photo/list&lt;/a&gt;����ϰʹ��Scrapy���ܲ���ʹ�õ�����user agent��ֹ��ban����ͼ������ÿ�ո��£�һ������ץȡ5�������ҵı��鵽Ӳ���С�Ϊ�˽�ʡʱ���Ҿ�ץȡ��1�����š�&lt;br&gt;
+    
+    </summary>
+    
+    
+      <category term="python" scheme="http://bulolo.cn/tags/python/"/>
+    
+      <category term="����" scheme="http://bulolo.cn/tags/%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD/"/>
+    
+      <category term="scpray" scheme="http://bulolo.cn/tags/scpray/"/>
+    
+      <category term="ͼƬ" scheme="http://bulolo.cn/tags/%CD%BCT/"/>
+    
+  </entry>
+  
+  <entry>
     <title>Python爬虫日记9：Python爬虫日记九：豌豆荚设计奖多进程，异步IO爬取速度对比</title>
     <link href="http://bulolo.cn/2017/06/07/spider9/"/>
     <id>http://bulolo.cn/2017/06/07/spider9/</id>
     <published>2017-06-07T11:21:35.000Z</published>
-    <updated>2017-06-07T15:27:42.395Z</updated>
+    <updated>2017-06-08T01:56:28.748Z</updated>
     
     <content type="html"><![CDATA[<p><img src="http://upload-images.jianshu.io/upload_images/4701426-fdd4ccad379e3f01.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""></p>
 <h1 id="一：前言"><a href="#一：前言" class="headerlink" title="一：前言"></a>一：前言</h1><p>使用requests+BeautifulSoup或者xpath等网页解析工具就可以爬取大部分的网页 ，但是有时爬取的量很大时爬取的速度就让人头疼，今天我就使用三种方式来爬取豌豆荚的设计奖APP相关信息并保存到mongodb，从而对比速度让我们更清楚的认识这些东西用处。<br><a id="more"></a></p>
