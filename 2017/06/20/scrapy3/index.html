@@ -1,0 +1,828 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="python,爬虫,scpray,信息," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="一：前言继续练习Scrapy框架，这次抓取的果壳问答网站的热门问答和精彩问答相关信息，信息如下：标题，关注量，回答数目，简介等。之后保存到mongodb和json文件中以备后续使用。代码地址：https://github.com/rieuse/ScrapyStudy">
+<meta name="keywords" content="python,爬虫,scpray,信息">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Scrapy爬虫：果壳热门和精彩问答信息爬取">
+<meta property="og:url" content="http://bulolo.cn/2017/06/20/scrapy3/index.html">
+<meta property="og:site_name" content="布咯咯_rieuse">
+<meta property="og:description" content="一：前言继续练习Scrapy框架，这次抓取的果壳问答网站的热门问答和精彩问答相关信息，信息如下：标题，关注量，回答数目，简介等。之后保存到mongodb和json文件中以备后续使用。代码地址：https://github.com/rieuse/ScrapyStudy">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/4701426-c5d788b76b2f843d.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/4701426-dcb73cc63b1c6a5c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/4701426-3183c61c1135bc3a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/4701426-a064473ba2fd764b.gif?imageMogr2/auto-orient/strip">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/4701426-d2cfb2b67050ca30.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/4701426-d0178a74edfcfe00.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/4701426-95302976921e8254.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:updated_time" content="2017-06-20T23:52:59.130Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Scrapy爬虫：果壳热门和精彩问答信息爬取">
+<meta name="twitter:description" content="一：前言继续练习Scrapy框架，这次抓取的果壳问答网站的热门问答和精彩问答相关信息，信息如下：标题，关注量，回答数目，简介等。之后保存到mongodb和json文件中以备后续使用。代码地址：https://github.com/rieuse/ScrapyStudy">
+<meta name="twitter:image" content="http://upload-images.jianshu.io/upload_images/4701426-c5d788b76b2f843d.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://bulolo.cn/2017/06/20/scrapy3/"/>
+
+
+
+
+
+  <title>Scrapy爬虫：果壳热门和精彩问答信息爬取 | 布咯咯_rieuse</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?50a461f444436b23f6ab58e6a12a19b1";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//tajs.qq.com/stats?sId=62325199";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+<script>
+  	var _mtac = {};
+  	(function() {
+  		var mta = document.createElement("script");
+  		mta.src = "https://pingjs.qq.com/h5/stats.js?v2.0.4";
+  		mta.setAttribute("name", "MTAH5");
+  		mta.setAttribute("sid", "500460603");
+
+  		var s = document.getElementsByTagName("script")[0];
+  		s.parentNode.insertBefore(mta, s);
+  	})();
+</script>
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">布咯咯_rieuse</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://bulolo.cn/2017/06/20/scrapy3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="布咯咯_rieuse">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="布咯咯_rieuse">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Scrapy爬虫：果壳热门和精彩问答信息爬取</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-06-20T09:21:35+08:00">
+                2017-06-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a class="cloud-tie-join-count" href="/2017/06/20/scrapy3/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count join-count" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><img src="http://upload-images.jianshu.io/upload_images/4701426-c5d788b76b2f843d.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="果壳问答.jpg"></p>
+<h1 id="一：前言"><a href="#一：前言" class="headerlink" title="一：前言"></a>一：前言</h1><p>继续练习Scrapy框架，这次抓取的果壳问答网站的热门问答和精彩问答相关信息，信息如下：标题，关注量，回答数目，简介等。之后保存到mongodb和json文件中以备后续使用。代码地址：<a href="https://github.com/rieuse/ScrapyStudy" target="_blank" rel="external">https://github.com/rieuse/ScrapyStudy</a><br><a id="more"></a></p>
+<h1 id="二：运行环境"><a href="#二：运行环境" class="headerlink" title="二：运行环境"></a>二：运行环境</h1><ul>
+<li>IDE：Pycharm 2017</li>
+<li>Python3.6</li>
+<li>pymongo 3.4.0</li>
+<li>scrapy 1.3.3<h1 id="三：实例分析"><a href="#三：实例分析" class="headerlink" title="三：实例分析"></a>三：实例分析</h1>1.首先进入果壳问答<a href="http://www.guokr.com/ask/" target="_blank" rel="external">http://www.guokr.com/ask/</a> ，我这次爬取的是热门问答和精彩问答的全部信息。</li>
+</ul>
+<p><img src="http://upload-images.jianshu.io/upload_images/4701426-dcb73cc63b1c6a5c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="果壳"></p>
+<p>2.进入热门问答和精彩问答，他们的页面结构是一样的。网址是www.guokr.com/ask/hottest 和www.guokr.com/ask/highlight 然后他们都有很多页面，点击下一页后页面地址就会加上后缀<code>?page=数字</code>，后面的数字就是页面的数目，随后我们将使用列表迭代生成我们爬取的页面地址。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">start_urls = [&apos;http://www.guokr.com/ask/hottest/?page=&#123;&#125;&apos;.format(n) for n in range(1, 8)] + [&apos;http://www.guokr.com/ask/highlight/?page=&#123;&#125;&apos;.format(m) for m in range(1, 101)]</div></pre></td></tr></table></figure></p>
+<p>3.抓取内容：问答的关注，回答，标题，简介。</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/4701426-3183c61c1135bc3a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="抓取内容"><br>4.网页结构分析：全部问答内容在class=”ask-list-cp”的ul下的li中，<br>所以对应的xpath地址如下，问答的单个信息的xpath取值是在全部信息的基础上取的。这里xpath选取比较灵活，可以使用属性，不同的相对位置。很多方式都可以选择到我们需要的数据，一种不成功就换其他的。比如这里的几个div都有自己单独的属性，就可以利用这个去选择。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">全部信息：/html/body/div[3]/div[1]/ul[2]/li</div><div class="line">关注：//div[@class=&quot;ask-hot-nums&quot;]/p[1]/span/text()</div><div class="line">回答：//div[1]/p[2]/span/text()</div><div class="line">标题：//div[2]/h2/a/text()</div><div class="line">简介：//div[2]/p/text()</div><div class="line">链接：//div[2]/h2/a/@href</div></pre></td></tr></table></figure></p>
+<p><img src="http://upload-images.jianshu.io/upload_images/4701426-a064473ba2fd764b.gif?imageMogr2/auto-orient/strip" alt="GIF.gif"></p>
+<h1 id="四：实战代码"><a href="#四：实战代码" class="headerlink" title="四：实战代码"></a>四：实战代码</h1><p>分析好页面结构和数据位置就可以使用scrapy框架来抓取数据了。完整代码地址：<a href="https://github.com/rieuse/ScrapyStudy/tree/master/Guoke" target="_blank" rel="external">github.com/rieuse/ScrapyStudy</a></p>
+<p>1.首先使用命令行工具输入代码创建一个新的Scrapy项目，之后创建一个爬虫。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">scrapy startproject Guoke</div><div class="line">cd Guoke\Guoke\spiders</div><div class="line">scrapy genspider guoke guokr.com</div></pre></td></tr></table></figure></p>
+<p>2.打开Guoke文件夹中的items.py，改为以下代码，定义我们爬取的项目。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">import scrapy</div><div class="line"></div><div class="line"></div><div class="line">class GuokeItem(scrapy.Item):</div><div class="line">    title = scrapy.Field()</div><div class="line">    Focus = scrapy.Field()</div><div class="line">    answer = scrapy.Field()</div><div class="line">    link = scrapy.Field()</div><div class="line">    content = scrapy.Field()</div></pre></td></tr></table></figure></p>
+<p>3.配置middleware.py配合settings中的User_Agent设置可以在下载中随机选择UA有一定的反ban效果，在原有代码基础上加入下面代码。这里的user_agent_list可以加入更多。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line">import random</div><div class="line">from scrapy.downloadermiddlewares.useragent import UserAgentMiddleware</div><div class="line"></div><div class="line"></div><div class="line">class RotateUserAgentMiddleware(UserAgentMiddleware):</div><div class="line">    def __init__(self, user_agent=&apos;&apos;):</div><div class="line">        self.user_agent = user_agent</div><div class="line"></div><div class="line">    def process_request(self, request, spider):</div><div class="line">        ua = random.choice(self.user_agent_list)</div><div class="line">        if ua:</div><div class="line">            print(ua)</div><div class="line">            request.headers.setdefault(&apos;User-Agent&apos;, ua)</div><div class="line"></div><div class="line">    user_agent_list = [</div><div class="line">        &quot;Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.1 (KHTML, like Gecko) Chrome/22.0.1207.1 Safari/537.1&quot;</div><div class="line">        &quot;Mozilla/5.0 (X11; CrOS i686 2268.111.0) AppleWebKit/536.11 (KHTML, like Gecko) Chrome/20.0.1132.57 Safari/536.11&quot;,</div><div class="line">        &quot;Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/536.6 (KHTML, like Gecko) Chrome/20.0.1092.0 Safari/536.6&quot;,</div><div class="line">        &quot;Mozilla/5.0 (Windows NT 6.2) AppleWebKit/536.6 (KHTML, like Gecko) Chrome/20.0.1090.0 Safari/536.6&quot;,</div><div class="line">        &quot;Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.1 (KHTML, like Gecko) Chrome/19.77.34.5 Safari/537.1&quot;,</div><div class="line">        &quot;Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/536.5 (KHTML, like Gecko) Chrome/19.0.1084.9 Safari/536.5&quot;,</div><div class="line">        &quot;Mozilla/5.0 (Windows NT 6.0) AppleWebKit/536.5 (KHTML, like Gecko) Chrome/19.0.1084.36 Safari/536.5&quot;,</div><div class="line">        &quot;Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/536.3 (KHTML, like Gecko) Chrome/19.0.1063.0 Safari/536.3&quot;,</div><div class="line">        &quot;Mozilla/5.0 (Windows NT 5.1) AppleWebKit/536.3 (KHTML, like Gecko) Chrome/19.0.1063.0 Safari/536.3&quot;,</div><div class="line">        &quot;Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_0) AppleWebKit/536.3 (KHTML, like Gecko) Chrome/19.0.1063.0 Safari/536.3&quot;,</div><div class="line">        &quot;Mozilla/5.0 (Windows NT 6.2) AppleWebKit/536.3 (KHTML, like Gecko) Chrome/19.0.1062.0 Safari/536.3&quot;,</div><div class="line">        &quot;Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/536.3 (KHTML, like Gecko) Chrome/19.0.1062.0 Safari/536.3&quot;,</div><div class="line"></div><div class="line">    ]</div></pre></td></tr></table></figure></p>
+<p>4.明确一下目标，这是抓取的数据保存到mongodb数据库中和本地json文件。所以需要设置一下Pipeline<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line">import json</div><div class="line">import pymongo</div><div class="line">from scrapy.conf import settings</div><div class="line"></div><div class="line"></div><div class="line">class GuokePipeline(object):</div><div class="line">    def __init__(self):</div><div class="line">        self.client = pymongo.MongoClient(host=settings[&apos;MONGO_HOST&apos;], port=settings[&apos;MONGO_PORT&apos;])</div><div class="line">        self.db = self.client[settings[&apos;MONGO_DB&apos;]]</div><div class="line">        self.post = self.db[settings[&apos;MONGO_COLL&apos;]]</div><div class="line"></div><div class="line">    def process_item(self, item, spider):</div><div class="line">        postItem = dict(item)</div><div class="line">        self.post.insert(postItem)</div><div class="line">        return item</div><div class="line"></div><div class="line"></div><div class="line">class JsonWriterPipeline(object):</div><div class="line">    def __init__(self):</div><div class="line">        self.file = open(&apos;guoke.json&apos;, &apos;w&apos;, encoding=&apos;utf-8&apos;)</div><div class="line"></div><div class="line">    def process_item(self, item, spider):</div><div class="line">        line = json.dumps(dict(item), ensure_ascii=False) + &quot;\n&quot;</div><div class="line">        self.file.write(line)</div><div class="line">        return item</div><div class="line"></div><div class="line">    def spider_closed(self, spider):</div><div class="line">        self.file.close()</div></pre></td></tr></table></figure></p>
+<p>5.然后设置里面也要修改一下，这样才能启动Pipeline相关配置，最后可以保存相关数据。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line">BOT_NAME = &apos;Guoke&apos;</div><div class="line">SPIDER_MODULES = [&apos;Guoke.spiders&apos;]</div><div class="line">NEWSPIDER_MODULE = &apos;Guoke.spiders&apos;</div><div class="line"></div><div class="line"># 配置mongodb</div><div class="line">MONGO_HOST = &quot;127.0.0.1&quot;  # 主机IP</div><div class="line">MONGO_PORT = 27017  # 端口号</div><div class="line">MONGO_DB = &quot;Guoke&quot;  # 库名</div><div class="line">MONGO_COLL = &quot;Guoke_info&quot;  # collection</div><div class="line"></div><div class="line"># pipeline文件的入口,这里进</div><div class="line">ITEM_PIPELINES = &#123;</div><div class="line">    &apos;Guoke.pipelines.JsonWriterPipeline&apos;: 300,</div><div class="line">    &apos;Guoke.pipelines.GuokePipeline&apos;: 300,</div><div class="line"> &#125;</div><div class="line"></div><div class="line"># 设置随机User_Agent</div><div class="line">DOWNLOADER_MIDDLEWARES = &#123;</div><div class="line">    &apos;scrapy.downloadermiddlewares.useragent.UserAgentMiddleware&apos;: None,</div><div class="line">    &apos;Guoke.middlewares.RotateUserAgentMiddleware&apos;: 400,</div><div class="line">&#125;</div><div class="line"></div><div class="line">ROBOTSTXT_OBEY = False  # 不遵循网站的robots.txt策略</div><div class="line">DOWNLOAD_DELAY = 1  # 下载同一个网站页面前等待的时间，可以用来限制爬取速度减轻服务器压力。</div><div class="line">COOKIES_ENABLED = False  # 关闭cookies</div></pre></td></tr></table></figure></p>
+<p>6.最后就是重点了，打开spiders文件夹中的guoke.py，改为以下代码，这个是爬虫主程序。这里面的开始链接就是热门回答和精彩回答结合。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line"># -*- coding: utf-8 -*-</div><div class="line">import scrapy</div><div class="line">from Guoke.items import GuokeItem</div><div class="line"></div><div class="line"></div><div class="line">class GuokeSpider(scrapy.Spider):</div><div class="line">    name = &quot;guoke&quot;</div><div class="line">    allowed_domains = [&quot;guokr.com&quot;]</div><div class="line">    start_urls = [&apos;http://www.guokr.com/ask/hottest/?page=&#123;&#125;&apos;.format(n) for n in range(1, 8)] + [</div><div class="line">        &apos;http://www.guokr.com/ask/highlight/?page=&#123;&#125;&apos;.format(m) for m in range(1, 101)]</div><div class="line"></div><div class="line">    def parse(self, response):</div><div class="line">        item = GuokeItem()</div><div class="line">        i = 0</div><div class="line">        for content in response.xpath(&apos;/html/body/div[3]/div[1]/ul[2]/li&apos;):</div><div class="line">            item[&apos;title&apos;] = content.xpath(&apos;//div[2]/h2/a/text()&apos;).extract()[i]</div><div class="line">            item[&apos;Focus&apos;] = content.xpath(&apos;//div[@class=&quot;ask-hot-nums&quot;]/p[1]/span/text()&apos;).extract()[i]</div><div class="line">            item[&apos;answer&apos;] = content.xpath(&apos;//div[1]/p[2]/span/text()&apos;).extract()[i]</div><div class="line">            item[&apos;link&apos;] = content.xpath(&apos;//div[2]/h2/a/@href&apos;).extract()[i]</div><div class="line">            item[&apos;content&apos;] = content.xpath(&apos;//div[2]/p/text()&apos;).extract()[i]</div><div class="line">            i += 1</div><div class="line">            yield item</div></pre></td></tr></table></figure></p>
+<h1 id="五：总结"><a href="#五：总结" class="headerlink" title="五：总结"></a>五：总结</h1><p>先来看看抓取后的效果如何，mongodb我使用的可视化客户端是robomongodb，日常打开代码的工具是notepad++，atom，vscode都还不错推荐一波。代码都放在github中了，有喜欢的朋友可以点击 start follw，<a href="https://github.com/rieuse" target="_blank" rel="external">https://github.com/rieuse</a> 。<br>mongodb：<br><img src="http://upload-images.jianshu.io/upload_images/4701426-d2cfb2b67050ca30.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="mongodbg"><br>json文件：</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/4701426-d0178a74edfcfe00.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="json文件"></p>
+<p><img src="http://upload-images.jianshu.io/upload_images/4701426-95302976921e8254.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="不断学习，继续加油！"></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/python/" rel="tag"># python</a>
+          
+            <a href="/tags/Spider/" rel="tag"># 爬虫</a>
+          
+            <a href="/tags/scpray/" rel="tag"># scpray</a>
+          
+            <a href="/tags/信息/" rel="tag"># 信息</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/06/18/scrapy2/" rel="next" title="Python爬虫：大规模爬取喜马拉雅电台详细音频数据">
+                <i class="fa fa-chevron-left"></i> Python爬虫：大规模爬取喜马拉雅电台详细音频数据
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="cloud-tie-wrapper" class="cloud-tie-wrapper"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.png"
+               alt="布咯咯_rieuse" />
+          <p class="site-author-name" itemprop="name">布咯咯_rieuse</p>
+           
+              <p class="site-description motion-element" itemprop="description">爱编程！爱Python！</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">14</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">13</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/rieuse" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://www.jianshu.com/u/28fbebb6ac57" target="_blank" title="简书地址">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  简书地址
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一：前言"><span class="nav-text">一：前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#二：运行环境"><span class="nav-text">二：运行环境</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#三：实例分析"><span class="nav-text">三：实例分析</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#四：实战代码"><span class="nav-text">四：实战代码</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#五：总结"><span class="nav-text">五：总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+	  
+
+    </div>
+	
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">布咯咯_rieuse</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+        
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      
+    </span>
+  
+</div>
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.1"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+    
+    <script>
+      var cloudTieConfig = {
+        url: document.location.href, 
+        sourceId: "",
+        productKey: "11e73d48058a495da6f520a63923b7b6",
+        target: "cloud-tie-wrapper"
+      };
+    </script>
+    <script src="https://img1.ws.126.net/f2e/tie/yun/sdk/loader.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</body>
+</html>

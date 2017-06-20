@@ -1,0 +1,834 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="python,爬虫,scpray,音频," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="一：前言本次爬取的是喜马拉雅的热门栏目下全部电台的每个频道的信息和频道中的每个音频数据的各种信息，然后把爬取的数据保存到mongodb以备后续使用。这次数据量在70万左右。音频数据包括音频下载地址，频道信息，简介等等，非常多。昨天进行了人生中第一次面试，对方是一家人工智能大数据公司，我准备在这大二的暑假去实习，他们就要求有爬取过音频数据，所以我就来分析一下喜马拉雅的音频数据爬下来。目前我还在等待">
+<meta name="keywords" content="python,爬虫,scpray,音频">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Python爬虫：大规模爬取喜马拉雅电台详细音频数据">
+<meta property="og:url" content="http://bulolo.cn/2017/06/18/scrapy2/index.html">
+<meta property="og:site_name" content="布咯咯_rieuse">
+<meta property="og:description" content="一：前言本次爬取的是喜马拉雅的热门栏目下全部电台的每个频道的信息和频道中的每个音频数据的各种信息，然后把爬取的数据保存到mongodb以备后续使用。这次数据量在70万左右。音频数据包括音频下载地址，频道信息，简介等等，非常多。昨天进行了人生中第一次面试，对方是一家人工智能大数据公司，我准备在这大二的暑假去实习，他们就要求有爬取过音频数据，所以我就来分析一下喜马拉雅的音频数据爬下来。目前我还在等待">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/4701426-3187de405166e2a0.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/4701426-891631b667237aa2.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/4701426-9615666111457d3a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/4701426-d72a77797d0b258f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/4701426-b808483245c72daa.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/4701426-c86a52c57fd81fbf.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/4701426-858ca9052b8d9585.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:updated_time" content="2017-06-20T23:51:51.844Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Python爬虫：大规模爬取喜马拉雅电台详细音频数据">
+<meta name="twitter:description" content="一：前言本次爬取的是喜马拉雅的热门栏目下全部电台的每个频道的信息和频道中的每个音频数据的各种信息，然后把爬取的数据保存到mongodb以备后续使用。这次数据量在70万左右。音频数据包括音频下载地址，频道信息，简介等等，非常多。昨天进行了人生中第一次面试，对方是一家人工智能大数据公司，我准备在这大二的暑假去实习，他们就要求有爬取过音频数据，所以我就来分析一下喜马拉雅的音频数据爬下来。目前我还在等待">
+<meta name="twitter:image" content="http://upload-images.jianshu.io/upload_images/4701426-3187de405166e2a0.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://bulolo.cn/2017/06/18/scrapy2/"/>
+
+
+
+
+
+  <title>Python爬虫：大规模爬取喜马拉雅电台详细音频数据 | 布咯咯_rieuse</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?50a461f444436b23f6ab58e6a12a19b1";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//tajs.qq.com/stats?sId=62325199";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+<script>
+  	var _mtac = {};
+  	(function() {
+  		var mta = document.createElement("script");
+  		mta.src = "https://pingjs.qq.com/h5/stats.js?v2.0.4";
+  		mta.setAttribute("name", "MTAH5");
+  		mta.setAttribute("sid", "500460603");
+
+  		var s = document.getElementsByTagName("script")[0];
+  		s.parentNode.insertBefore(mta, s);
+  	})();
+</script>
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">布咯咯_rieuse</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://bulolo.cn/2017/06/18/scrapy2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="布咯咯_rieuse">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="布咯咯_rieuse">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Python爬虫：大规模爬取喜马拉雅电台详细音频数据</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-06-18T09:21:35+08:00">
+                2017-06-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a class="cloud-tie-join-count" href="/2017/06/18/scrapy2/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count join-count" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><img src="http://upload-images.jianshu.io/upload_images/4701426-3187de405166e2a0.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="喜马拉雅"></p>
+<h1 id="一：前言"><a href="#一：前言" class="headerlink" title="一：前言"></a>一：前言</h1><p>本次爬取的是喜马拉雅的热门栏目下全部电台的每个频道的信息和频道中的每个音频数据的各种信息，然后把爬取的数据保存到mongodb以备后续使用。这次数据量在70万左右。音频数据包括音频下载地址，频道信息，简介等等，非常多。<br>昨天进行了人生中第一次面试，对方是一家人工智能大数据公司，我准备在这大二的暑假去实习，他们就要求有爬取过音频数据，所以我就来分析一下喜马拉雅的音频数据爬下来。目前我还在等待三面中，或者是通知最终面试消息。 （因为能得到一定肯定，不管成功与否都很开心）<br><a id="more"></a></p>
+<hr>
+<h1 id="二：运行环境"><a href="#二：运行环境" class="headerlink" title="二：运行环境"></a>二：运行环境</h1><ul>
+<li>IDE：Pycharm 2017</li>
+<li>Python3.6</li>
+<li>pymongo 3.4.0</li>
+<li>requests 2.14.2</li>
+<li>lxml 3.7.2</li>
+<li>BeautifulSoup 4.5.3</li>
+</ul>
+<hr>
+<h1 id="三：实例分析"><a href="#三：实例分析" class="headerlink" title="三：实例分析"></a>三：实例分析</h1><p>1.首先进入这次爬取的主页面<a href="http://www.ximalaya.com/dq/all/" target="_blank" rel="external">http://www.ximalaya.com/dq/all/</a> ，可以看到每页12个频道，每个频道下面有很多的音频，有的频道中还有很多分页。抓取计划：循环84个页面，对每个页面解析后抓取每个频道的名称，图片链接，频道链接保存到mongodb。<br><img src="http://upload-images.jianshu.io/upload_images/4701426-891631b667237aa2.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="热门频道"></p>
+<p>2.打开开发者模式，分析页面，很快就可以得到想要的数据的位置。下面的代码就实现了抓取全部热门频道的信息，就可以保存到mongodb中。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">start_urls = [&apos;http://www.ximalaya.com/dq/all/&#123;&#125;&apos;.format(num) for num in range(1, 85)]</div><div class="line">for start_url in start_urls:</div><div class="line">    html = requests.get(start_url, headers=headers1).text</div><div class="line">    soup = BeautifulSoup(html, &apos;lxml&apos;)</div><div class="line">    for item in soup.find_all(class_=&quot;albumfaceOutter&quot;):</div><div class="line">        content = &#123;</div><div class="line">            &apos;href&apos;: item.a[&apos;href&apos;],</div><div class="line">            &apos;title&apos;: item.img[&apos;alt&apos;],</div><div class="line">            &apos;img_url&apos;: item.img[&apos;src&apos;]</div><div class="line">        &#125;</div><div class="line">        print(content)</div></pre></td></tr></table></figure></p>
+<p><img src="http://upload-images.jianshu.io/upload_images/4701426-9615666111457d3a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="分析频道"></p>
+<p>３.<strong>下面就是开始获取每个频道中的全部音频数据了</strong>，前面通过解析页面获取到了美国频道的链接。比如我们进入<a href="http://www.ximalaya.com/6565682/album/237771" target="_blank" rel="external">http://www.ximalaya.com/6565682/album/237771</a>　这个链接后分析页面结构。可以看出每个音频都有特定的ID，这个ID可以在一个div中的属性中获取。使用split()和int()来转换为单独的ID。</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/4701426-d72a77797d0b258f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="频道页面分析"></p>
+<p>4.接着点击一个音频链接，进入开发者模式后刷新页面然后点击XHR，再点击一个json链接可以看到这个就包括这个音频的全部详细信息。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">html = requests.get(url, headers=headers2).text</div><div class="line">numlist = etree.HTML(html).xpath(&apos;//div[@class=&quot;personal_body&quot;]/@sound_ids&apos;)[0].split(&apos;,&apos;)</div><div class="line">for i in numlist:</div><div class="line">    murl = &apos;http://www.ximalaya.com/tracks/&#123;&#125;.json&apos;.format(i)</div><div class="line">    html = requests.get(murl, headers=headers1).text</div><div class="line">    dic = json.loads(html)</div></pre></td></tr></table></figure></p>
+<p><img src="http://upload-images.jianshu.io/upload_images/4701426-b808483245c72daa.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="音频页面分析"><br>5.上面只是对一个频道的主页面解析全部音频信息，但是实际上频道的音频链接是有很多分页的。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">html = requests.get(url, headers=headers2).text</div><div class="line">ifanother = etree.HTML(html).xpath(&apos;//div[@class=&quot;pagingBar_wrapper&quot;]/a[last()-1]/@data-page&apos;)</div><div class="line">if len(ifanother):</div><div class="line">    num = ifanother[0]</div><div class="line">    print(&apos;本频道资源存在&apos; + num + &apos;个页面&apos;)</div><div class="line">    for n in range(1, int(num)):</div><div class="line">        print(&apos;开始解析&#123;&#125;个中的第&#123;&#125;个页面&apos;.format(num, n))</div><div class="line">        url2 = url + &apos;?page=&#123;&#125;&apos;.format(n)</div><div class="line">        # 之后就接解析音频页函数就行，后面有完整代码说明</div></pre></td></tr></table></figure>
+<p><img src="http://upload-images.jianshu.io/upload_images/4701426-c86a52c57fd81fbf.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="分页"></p>
+<p>6.全部代码<br><strong>完整代码地址<a href="https://github.com/rieuse/learnPython/blob/master/Python%E7%88%AC%E8%99%AB%E6%97%A5%E8%AE%B0%E7%B3%BB%E5%88%97/Python%E7%88%AC%E5%8F%96%E6%97%A5%E8%AE%B0%E5%8D%81%EF%BC%9A%E6%8A%93%E5%8F%96%E5%96%9C%E9%A9%AC%E6%8B%89%E9%9B%85%E7%94%B5%E5%8F%B0%E9%9F%B3%E9%A2%91.py" target="_blank" rel="external">github.com/rieuse/learnPython</a></strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div></pre></td><td class="code"><pre><div class="line">__author__ = &apos;布咯咯_rieuse&apos;</div><div class="line"></div><div class="line">import json</div><div class="line">import random</div><div class="line">import time</div><div class="line">import pymongo</div><div class="line">import requests</div><div class="line">from bs4 import BeautifulSoup</div><div class="line">from lxml import etree</div><div class="line"></div><div class="line">clients = pymongo.MongoClient(&apos;localhost&apos;)</div><div class="line">db = clients[&quot;XiMaLaYa&quot;]</div><div class="line">col1 = db[&quot;album&quot;]</div><div class="line">col2 = db[&quot;detaile&quot;]</div><div class="line"></div><div class="line">UA_LIST = []  # 很多User-Agent用来随机使用可以防ban，显示不方便不贴出来了</div><div class="line">headers1 = &#123;&#125; # 访问网页的headers，这里显示不方便我就不贴出来了</div><div class="line">headers2 = &#123;&#125; # 访问网页的headers这里显示不方便我就不贴出来了</div><div class="line"></div><div class="line">def get_url():</div><div class="line">    start_urls = [&apos;http://www.ximalaya.com/dq/all/&#123;&#125;&apos;.format(num) for num in range(1, 85)]</div><div class="line">    for start_url in start_urls:</div><div class="line">        html = requests.get(start_url, headers=headers1).text</div><div class="line">        soup = BeautifulSoup(html, &apos;lxml&apos;)</div><div class="line">        for item in soup.find_all(class_=&quot;albumfaceOutter&quot;):</div><div class="line">            content = &#123;</div><div class="line">                &apos;href&apos;: item.a[&apos;href&apos;],</div><div class="line">                &apos;title&apos;: item.img[&apos;alt&apos;],</div><div class="line">                &apos;img_url&apos;: item.img[&apos;src&apos;]</div><div class="line">            &#125;</div><div class="line">            col1.insert(content)</div><div class="line">            print(&apos;写入一个频道&apos; + item.a[&apos;href&apos;])</div><div class="line">            print(content)</div><div class="line">            another(item.a[&apos;href&apos;])</div><div class="line">        time.sleep(1)</div><div class="line"></div><div class="line"></div><div class="line">def another(url):</div><div class="line">    html = requests.get(url, headers=headers2).text</div><div class="line">    ifanother = etree.HTML(html).xpath(&apos;//div[@class=&quot;pagingBar_wrapper&quot;]/a[last()-1]/@data-page&apos;)</div><div class="line">    if len(ifanother):</div><div class="line">        num = ifanother[0]</div><div class="line">        print(&apos;本频道资源存在&apos; + num + &apos;个页面&apos;)</div><div class="line">        for n in range(1, int(num)):</div><div class="line">            print(&apos;开始解析&#123;&#125;个中的第&#123;&#125;个页面&apos;.format(num, n))</div><div class="line">            url2 = url + &apos;?page=&#123;&#125;&apos;.format(n)</div><div class="line">            get_m4a(url2)</div><div class="line">    get_m4a(url)</div><div class="line"></div><div class="line"></div><div class="line">def get_m4a(url):</div><div class="line">    time.sleep(1)</div><div class="line">    html = requests.get(url, headers=headers2).text</div><div class="line">    numlist = etree.HTML(html).xpath(&apos;//div[@class=&quot;personal_body&quot;]/@sound_ids&apos;)[0].split(&apos;,&apos;)</div><div class="line">    for i in numlist:</div><div class="line">        murl = &apos;http://www.ximalaya.com/tracks/&#123;&#125;.json&apos;.format(i)</div><div class="line">        html = requests.get(murl, headers=headers1).text</div><div class="line">        dic = json.loads(html)</div><div class="line">        col2.insert(dic)</div><div class="line">        print(murl + &apos;中的数据已被成功插入mongodb&apos;)</div><div class="line"></div><div class="line"></div><div class="line">if __name__ == &apos;__main__&apos;:</div><div class="line">    get_url()</div></pre></td></tr></table></figure></p>
+<p>7.如果改成异步的形式可以快一点，只需要修改成下面这样就行了。我试了每分钟要比普通的多获取近100条数据。这个源代码也在github中。</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/4701426-858ca9052b8d9585.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="异步"></p>
+<h1 id="五：总结"><a href="#五：总结" class="headerlink" title="五：总结"></a>五：总结</h1><p>这次抓取的数据量在70万左右，后续可以进行很多研究，比如播放量排行榜、时间区段排行、频道音频数量等等。后续继续学习使用科学计算和绘图工具做一些数据分析，清洗的工作。<br>贴出我的github地址，我的爬虫代码和学习写的代码都放进去了，有喜欢的朋友可以点击 start follw一起学习交流吧！<strong><a href="https://github.com/rieuse/learnPython" target="_blank" rel="external">github.com/rieuse/learnPython</a></strong></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/python/" rel="tag"># python</a>
+          
+            <a href="/tags/Spider/" rel="tag"># 爬虫</a>
+          
+            <a href="/tags/scpray/" rel="tag"># scpray</a>
+          
+            <a href="/tags/音频/" rel="tag"># 音频</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/06/12/scrapy1/" rel="next" title="Scrapy爬虫：抓取大量斗图网站最新表情图片">
+                <i class="fa fa-chevron-left"></i> Scrapy爬虫：抓取大量斗图网站最新表情图片
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/06/20/scrapy3/" rel="prev" title="Scrapy爬虫：果壳热门和精彩问答信息爬取">
+                Scrapy爬虫：果壳热门和精彩问答信息爬取 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="cloud-tie-wrapper" class="cloud-tie-wrapper"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.png"
+               alt="布咯咯_rieuse" />
+          <p class="site-author-name" itemprop="name">布咯咯_rieuse</p>
+           
+              <p class="site-description motion-element" itemprop="description">爱编程！爱Python！</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">14</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">13</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/rieuse" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://www.jianshu.com/u/28fbebb6ac57" target="_blank" title="简书地址">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  简书地址
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一：前言"><span class="nav-text">一：前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#二：运行环境"><span class="nav-text">二：运行环境</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#三：实例分析"><span class="nav-text">三：实例分析</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#五：总结"><span class="nav-text">五：总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+	  
+
+    </div>
+	
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">布咯咯_rieuse</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+        
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      
+    </span>
+  
+</div>
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.1"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+    
+    <script>
+      var cloudTieConfig = {
+        url: document.location.href, 
+        sourceId: "",
+        productKey: "11e73d48058a495da6f520a63923b7b6",
+        target: "cloud-tie-wrapper"
+      };
+    </script>
+    <script src="https://img1.ws.126.net/f2e/tie/yun/sdk/loader.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</body>
+</html>
